@@ -10,7 +10,8 @@ export default function SignUpPage() {
 
   const [formData, setFormData] = useState({
     fullName: "",
-    emailOrPhone: "",
+    email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
     termsAccepted: false,
@@ -33,6 +34,11 @@ export default function SignUpPage() {
       return;
     }
 
+    if (!formData.phone.trim()) {
+      setErrorMsg("يرجى إدخال رقم الهاتف للتحقق من الحساب");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -44,9 +50,9 @@ export default function SignUpPage() {
 
       const result = await res.json().catch(() => ({}));
 
-      if (res.ok && (result.success !== false)) {
-        // توجيه تلقائي ومباشر إلى صفحة تسجيل الدخول
-        router.push("/login");
+      if (res.ok && result.success !== false) {
+        const phone = result?.data?.phone || formData.phone.trim();
+        router.push(`/otp?target=${encodeURIComponent(phone)}&from=signup`);
       } else {
         setErrorMsg(result.message || "حدث خطأ أثناء إنشاء الحساب");
       }
@@ -73,14 +79,25 @@ export default function SignUpPage() {
           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
         />
 
-        {/* Email or Phone */}
+        {/* Email */}
         <Input
-          label="البريد الإلكتروني أو رقم الهاتف"
-          type="text"
+          label="البريد الإلكتروني"
+          type="email"
           required
           placeholder="example@mail.com"
-          value={formData.emailOrPhone}
-          onChange={(e) => setFormData({ ...formData, emailOrPhone: e.target.value })}
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
+
+        {/* Phone */}
+        <Input
+          label="رقم الهاتف"
+          type="tel"
+          required
+          inputMode="numeric"
+          placeholder="77XXXXXXX"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
         />
 
         {/* Password */}

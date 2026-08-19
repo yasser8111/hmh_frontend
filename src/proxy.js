@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 
 const BACKEND_API = (process.env.BACKEND_API || "").replace(/\/$/, "");
 
+const cookieOpts = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/",
+};
+
 async function isTokenValid(token) {
   if (!BACKEND_API) return false;
   try {
@@ -15,13 +22,54 @@ async function isTokenValid(token) {
   }
 }
 
+async function tryRefreshToken(request) {
+  const refreshToken = request.cookies.get("refresh_token")?.value;
+  if (!refreshToken || !BACKEND_API) return null;
+
+  try {
+    const res = await fetch(`${BACKEND_API}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+
+    const data = await res.json().catch(() => ({}));
+    const tokens = data?.data || data;
+    const accessToken = tokens?.access_token;
+    if (!accessToken) return null;
+
+    const response = NextResponse.next();
+    response.cookies.set("token", accessToken, {
+      ...cookieOpts,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    if (tokens.refresh_token) {
+      response.cookies.set("refresh_token", tokens.refresh_token, {
+        ...cookieOpts,
+        maxAge: 60 * 60 * 24 * 7,
+      });
+    }
+    return response;
+  } catch {
+    return null;
+  }
+}
+
+function clearSession() {
+  const response = NextResponse.next();
+  response.cookies.set("token", "", { ...cookieOpts, maxAge: 0 });
+  response.cookies.set("refresh_token", "", { ...cookieOpts, maxAge: 0 });
+  return response;
+}
+
 export async function proxy(request) {
   const token = request.cookies.get("token")?.value;
   const { pathname } = request.nextUrl;
 
   const isProtectedPath = pathname.startsWith("/app");
-
-  const isAuthPath = pathname === "/login" || pathname === "/signup";
+  const isAuthPath = pathname === "/login" || pathname === "/signup" || pathname === "/otp";
 
   if (isProtectedPath && !token) {
     const loginUrl = new URL("/login", request.url);
@@ -32,19 +80,23 @@ export async function proxy(request) {
   if (isAuthPath && token) {
     const valid = await isTokenValid(token);
 
-    if (!valid) {
-      // Stale/expired token: let the user reach the auth page and clear the cookie
-      const res = NextResponse.next();
-      res.cookies.delete("token");
-      return res;
+    if (valid) {
+      return NextResponse.redirect(new URL("/app", request.url));
     }
 
-    return NextResponse.redirect(new URL("/app", request.url));
+    // Stale/expired access token: try to refresh the session first
+    const refreshed = await tryRefreshToken(request);
+    if (refreshed) {
+      return NextResponse.redirect(new URL("/app", request.url));
+    }
+
+    // Refresh failed too: let the user reach the auth page and clear the cookies
+    return clearSession();
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/login", "/signup"],
+  matcher: ["/app/:path*", "/login", "/signup", "/otp"],
 };

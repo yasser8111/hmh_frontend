@@ -8,7 +8,7 @@ import { Button, InputOTP } from "@/components/ui";
 function OTPForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const emailOrPhone = searchParams.get("target") || "example@mail.com";
+  const phone = searchParams.get("target") || "";
 
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ function OTPForm() {
 
   const handleVerify = async (codeToVerify) => {
     const code = codeToVerify || otp;
-    if (!code || code.length < 6) {
+    if (!phone || !code || code.length < 6) {
       setErrorMsg("يرجى إدخال الرمز المكون من 6 أرقام");
       return;
     }
@@ -30,7 +30,7 @@ function OTPForm() {
       const res = await fetch("/api/auth/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emailOrPhone, otp: code }),
+        body: JSON.stringify({ phone, otp: code }),
       });
       const data = await res.json();
 
@@ -56,7 +56,7 @@ function OTPForm() {
       const res = await fetch("/api/auth/otp/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emailOrPhone }),
+        body: JSON.stringify({ phone }),
       });
       const data = await res.json();
 
@@ -75,6 +75,16 @@ function OTPForm() {
   return (
     <div className="w-full flex flex-col gap-6">
       <h3 className="text-2xl sm:text-3xl font-bold leading-relaxed mb-6">رمز التحقق</h3>
+
+      <p className="-mt-3 mb-2 text-center text-sm text-gray-500">
+        {phone ? (
+          <>
+            تم إرسال رمز التحقق إلى <span className="font-semibold text-gray-700" dir="ltr">{phone}</span>
+          </>
+        ) : (
+          "أدخل الرمز المرسل إلى رقم هاتفك"
+        )}
+      </p>
 
       <div className="flex justify-center my-2">
         <InputOTP

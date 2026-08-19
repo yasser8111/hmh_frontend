@@ -35,6 +35,9 @@ function LoginForm() {
       if (result.success) {
         router.push(redirectUrl);
         router.refresh();
+      } else if (result.needsVerification) {
+        const target = result.phone || formData.emailOrPhone.trim();
+        router.push(`/otp?target=${encodeURIComponent(target)}&from=login`);
       } else {
         setErrorMsg(result.message || "فشل تسجيل الدخول");
       }
