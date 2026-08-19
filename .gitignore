@@ -16,7 +16,10 @@
 # next.js
 /.next/
 /out/
-/agents
+# agents
+.agents
+.agents/
+AGENTS.md
 
 # production
 /build
