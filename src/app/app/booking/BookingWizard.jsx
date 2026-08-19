@@ -457,14 +457,14 @@ function SuccessConfirmation({ result, onReset }) {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-between pt-2"><Button
-            variant="muted"
-            arrowIcon={false}
-            onClick={onReset}
-            className="text-xs"
-          >
-            حجز موعد آخر
-          </Button>
+        <div className="flex gap-3 justify-between pt-2"><Button
+          variant="outline"
+          arrowIcon={false}
+          onClick={onReset}
+          className="text-xs"
+        >
+          حجز موعد آخر
+        </Button>
           <Button
             link="/app/appointments"
             variant="primary"

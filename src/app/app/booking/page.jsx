@@ -9,11 +9,13 @@ export const metadata = {
   description: "احجز موعدك الطبي بسهولة مع نخبة من استشاريي وأطباء مستشفى حضرموت الحديث",
 };
 
+const MAX_DOCTORS_LIMIT = 100;
+
 // Async data fetcher for the wizard section
 async function BookingWizardContainer() {
   const [specialties, doctors] = await Promise.all([
     bookingService.getSpecialties(),
-    bookingService.getDoctors(50),
+    bookingService.getDoctors(MAX_DOCTORS_LIMIT),
   ]);
 
   return <BookingWizard initialSpecialties={specialties} initialDoctors={doctors} />;

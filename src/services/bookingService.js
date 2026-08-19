@@ -20,13 +20,22 @@ export const bookingService = {
     }
   },
 
-  // Fetch active doctors list
-  async getDoctors(limit = 100) {
+  // Fetch active doctors list (capped at backend maximum limit of 100)
+  async getDoctors(options = 100) {
     const backendApi = getBackendApi();
     if (!backendApi) return [];
 
+    const rawLimit = typeof options === "number" ? options : options.limit || 100;
+    const limit = Math.min(Math.max(rawLimit, 1), 100);
+    const specialtyId = typeof options === "object" ? options.specialtyId : undefined;
+
+    let url = `${backendApi}/doctors?limit=${limit}`;
+    if (specialtyId) {
+      url += `&specialty_id=${encodeURIComponent(specialtyId)}`;
+    }
+
     try {
-      const res = await fetch(`${backendApi}/doctors?limit=${limit}`, { cache: "no-store" });
+      const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) return [];
       const json = await res.json();
       return json?.data || [];

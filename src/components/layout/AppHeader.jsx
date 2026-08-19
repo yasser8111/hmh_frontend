@@ -79,40 +79,41 @@ export function NavSection() {
           />
         )}
 
-        <div
-          className={`absolute top-0 end-0 z-50 w-64 max-w-[calc(100vw-2rem)] p-4 bg-white border border-gray-200 rounded-2xl shadow-xl transition-all duration-200 ease-out origin-top-right rtl:origin-top-left ${
-            isOpen
-              ? "opacity-100 scale-100 pointer-events-auto"
-              : "opacity-0 scale-95 pointer-events-none"
-          }`}
-        >
-          <div className="flex flex-col gap-3 w-full">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-              <span className="text-sm font-semibold text-gray-800">القائمة</span>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                aria-label="إغلاق القائمة"
-                className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors focus:outline-none cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <nav className="flex flex-col gap-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
+        {isOpen && (
+          <div
+            className={`absolute top-0 end-0 z-50 w-64 max-w-[calc(100vw-2rem)] p-4 bg-white border border-gray-200 rounded-2xl shadow-xl transition-all duration-200 ease-out origin-top-right rtl:origin-top-left ${isOpen
+                ? "opacity-100 scale-100 pointer-events-auto"
+                : "opacity-0 scale-95 pointer-events-none"
+              }`}
+          >
+            <div className="flex flex-col gap-3 w-full">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                <span className="text-sm font-semibold text-gray-800">القائمة</span>
+                <button
+                  type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-3 py-2 text-sm font-medium hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors rounded-lg"
+                  aria-label="إغلاق القائمة"
+                  className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors focus:outline-none cursor-pointer"
                 >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <nav className="flex flex-col gap-1">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="px-3 py-2 text-sm font-medium hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors rounded-lg"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { bookingService } from "@/services/bookingService";
 
 export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] }) {
+  const searchParams = useSearchParams();
+  const doctorIdParam = searchParams?.get("doctor_id") || searchParams?.get("doctorId");
+  const specialtyIdParam = searchParams?.get("specialty_id") || searchParams?.get("specialtyId");
+
   const [currentStep, setCurrentStep] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
@@ -18,6 +23,46 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingResult, setBookingResult] = useState(null);
+
+  // Handle URL query parameters (e.g. ?doctor_id=... or ?specialty_id=...)
+  useEffect(() => {
+    if (!initialDoctors?.length || !initialSpecialties?.length) return;
+
+    if (doctorIdParam) {
+      const doc = initialDoctors.find(
+        (d) => String(d.doctor_id) === String(doctorIdParam) || String(d.id) === String(doctorIdParam)
+      );
+      if (doc) {
+        const spec = initialSpecialties.find(
+          (s) => String(s.specialty_id) === String(doc.specialty_id) || String(s.id) === String(doc.specialty_id)
+        );
+        if (spec) {
+          setSelectedSpecialty(spec);
+        }
+        setSelectedDoctor(doc);
+        setCurrentStep(3);
+        return;
+      }
+    }
+
+    if (specialtyIdParam) {
+      const spec = initialSpecialties.find(
+        (s) => String(s.specialty_id) === String(specialtyIdParam) || String(s.id) === String(specialtyIdParam)
+      );
+      if (spec) {
+        setSelectedSpecialty(spec);
+        const docs = initialDoctors.filter(
+          (d) => String(d.specialty_id) === String(spec.specialty_id)
+        );
+        if (docs.length === 1) {
+          setSelectedDoctor(docs[0]);
+          setCurrentStep(3);
+        } else {
+          setCurrentStep(2);
+        }
+      }
+    }
+  }, [doctorIdParam, specialtyIdParam, initialDoctors, initialSpecialties]);
 
   // Filter specialties by Arabic query
   const filteredSpecialties = useMemo(() => {
