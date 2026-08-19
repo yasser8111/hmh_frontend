@@ -91,7 +91,7 @@ function LoginForm() {
       {/* Footer link to Sign up */}
       <p className="text-center text-sm text-gray-600 mt-6">
         ليس لديك حساب بعد؟{" "}
-        <Link href="/siginup" className="text-primary font-bold hover:underline">
+        <Link href="/signup" className="text-primary font-bold hover:underline">
           إنشاء حساب جديد
         </Link>
       </p>
