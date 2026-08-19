@@ -37,13 +37,13 @@ export function HeroSection() {
       </div>
 
       {/* Image Card Column */}
-      <Card className="flex-1 min-h-full">
+      <Card className="flex-1 relative w-full min-h-[350px] sm:min-h-[420px] lg:min-h-full self-stretch">
         <Image
           src="/images/hero_doctor_patient.png"
           alt="doctor"
           fill
           priority
-          sizes="100vh"
+          sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover"
         />
       </Card>
@@ -55,11 +55,12 @@ export function HeroSection() {
 export function AboutSection() {
   return (
     <section id="about" className="section flex flex-col-reverse lg:flex-row">
-      <Card className="flex-1">
+      <Card className="flex-1 relative min-h-[320px] lg:min-h-full w-full overflow-hidden">
         <Image
           src="/images/surgery.jpg"
           alt="doctor"
           fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
           className="object-cover"
         />
       </Card>

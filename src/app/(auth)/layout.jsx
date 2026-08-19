@@ -26,12 +26,13 @@ export default function AuthLayout({ children }) {
       </div>
 
       {/* Image Card Column */}
-      <Card className="flex-1 w-full hidden lg:block self-stretch">
+      <Card className="flex-1 w-full hidden lg:block self-stretch relative overflow-hidden">
         <Image
           src="/images/hero_doctor_patient.png"
           alt="doctor"
           fill
           priority
+          sizes="50vw"
           className="object-cover"
         />
       </Card>

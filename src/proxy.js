@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server";
 
-export function middleware(request) {
+export function proxy(request) {
   const token = request.cookies.get("token")?.value;
   const { pathname } = request.nextUrl;
 
-  const isProtectedPath =
-    pathname.startsWith("/app") ||
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/profile");
+  const isProtectedPath = pathname.startsWith("/app");
 
-  const isAuthPath =
-    pathname === "/login" ||
-    pathname === "/siginup";
+  const isAuthPath = pathname === "/login" || pathname === "/siginup";
 
   // if (isProtectedPath && !token) {
   //   const loginUrl = new URL("/login", request.url);
@@ -27,11 +22,5 @@ export function middleware(request) {
 }
 
 export const config = {
-  matcher: [
-    "/app/:path*",
-    "/dashboard/:path*",
-    "/profile/:path*",
-    "/login",
-    "/siginup",
-  ],
+  matcher: ["/app/:path*", "/login", "/siginup"],
 };

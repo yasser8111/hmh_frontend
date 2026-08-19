@@ -64,20 +64,25 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
     }
   }, [doctorIdParam, specialtyIdParam, initialDoctors, initialSpecialties]);
 
-  // Filter specialties by Arabic query
+  // Filter specialties by query (Arabic or English)
   const filteredSpecialties = useMemo(() => {
     if (!searchQuery.trim()) return initialSpecialties;
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.toLowerCase().trim();
     return initialSpecialties.filter(
-      (spec) => spec.name_ar && spec.name_ar.toLowerCase().includes(q)
+      (spec) =>
+        (spec.name_ar && spec.name_ar.toLowerCase().includes(q)) ||
+        (spec.name_en && spec.name_en.toLowerCase().includes(q))
     );
   }, [initialSpecialties, searchQuery]);
 
   // Filter doctors by selected specialty ID
   const availableDoctors = useMemo(() => {
     if (!selectedSpecialty) return initialDoctors;
+    const specId = String(selectedSpecialty.specialty_id || selectedSpecialty.id || "");
     return initialDoctors.filter(
-      (doc) => doc.specialty_id === selectedSpecialty.specialty_id
+      (doc) =>
+        String(doc.specialty_id) === specId ||
+        String(doc.specialtyId) === specId
     );
   }, [initialDoctors, selectedSpecialty]);
 
@@ -98,8 +103,11 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
 
   const selectSpecialty = (specialty) => {
     setSelectedSpecialty(specialty);
+    const specId = String(specialty.specialty_id || specialty.id || "");
     const docs = initialDoctors.filter(
-      (doc) => doc.specialty_id === specialty.specialty_id
+      (doc) =>
+        String(doc.specialty_id) === specId ||
+        String(doc.specialtyId) === specId
     );
     if (docs.length === 1) {
       setSelectedDoctor(docs[0]);

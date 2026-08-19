@@ -38,7 +38,7 @@ export default function Button({
         <span
           className={`size-7 sm:size-8 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 ${
             isPillWithBadge
-              ? "bg-white text-gray-900 shadow-xs"
+              ? "bg-white text-gray-900"
               : "bg-gray-200 text-gray-900"
           }`}
         >

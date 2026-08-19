@@ -1,41 +1,22 @@
-// Service handling all hospital booking and medical catalog API calls
+import { doctorsService } from "./doctorsService";
 
 const getBackendApi = () => {
-  return (process.env.NEXT_PUBLIC_BACKEND_API || process.env.BACKEND_API || "").replace(/\/$/, "");
+  return (process.env.BACKEND_API || "").replace(/\/$/, "");
 };
 
+// Default cache revalidation time in seconds (1 hour)
+const CACHE_REVALIDATE_SECONDS = 3600;
+
 export const bookingService = {
-  // Fetch active medical specialties
+  // Fetch active medical specialties with Next.js data caching
   async getSpecialties() {
     const backendApi = getBackendApi();
     if (!backendApi) return [];
 
     try {
-      const res = await fetch(`${backendApi}/specialties`, { cache: "no-store" });
-      if (!res.ok) return [];
-      const json = await res.json();
-      return json?.data || [];
-    } catch {
-      return [];
-    }
-  },
-
-  // Fetch active doctors list (capped at backend maximum limit of 100)
-  async getDoctors(options = 100) {
-    const backendApi = getBackendApi();
-    if (!backendApi) return [];
-
-    const rawLimit = typeof options === "number" ? options : options.limit || 100;
-    const limit = Math.min(Math.max(rawLimit, 1), 100);
-    const specialtyId = typeof options === "object" ? options.specialtyId : undefined;
-
-    let url = `${backendApi}/doctors?limit=${limit}`;
-    if (specialtyId) {
-      url += `&specialty_id=${encodeURIComponent(specialtyId)}`;
-    }
-
-    try {
-      const res = await fetch(url, { cache: "no-store" });
+      const res = await fetch(`${backendApi}/specialties?limit=100`, {
+        next: { revalidate: CACHE_REVALIDATE_SECONDS, tags: ["specialties"] },
+      });
       if (!res.ok) return [];
       const json = await res.json();
       return json?.data || [];
@@ -63,4 +44,11 @@ export const bookingService = {
       return null;
     }
   },
+
+  // Delegated doctor methods for backward compatibility
+  getDoctors: doctorsService.getDoctors,
+  getDoctorsPaginated: doctorsService.getDoctorsPaginated,
+  getDoctorById: doctorsService.getDoctorById,
+  getDoctorSchedule: doctorsService.getDoctorSchedule,
+  getDoctorAvailability: doctorsService.getDoctorAvailability,
 };

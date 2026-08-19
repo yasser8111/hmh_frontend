@@ -4,13 +4,19 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
 
 export function LogoSection() {
   return (
     <div className="flex items-center">
       <Link href="/app">
-        <Image src="/logo.png" alt="Logo" width={48} height={48} priority />
+        <Image
+          src="/logo.png"
+          alt="شعار مستشفى حضرموت الحديث"
+          width={130}
+          height={42}
+          className="h-9 w-auto object-contain"
+          priority
+        />
       </Link>
     </div>
   );
@@ -48,72 +54,98 @@ export function NavSection() {
     <>
       {/* Desktop navigation */}
       <nav className="items-center gap-6 hidden lg:flex ms-auto">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="text-gray-700 hover:text-primary-500 font-medium transition-colors"
-          >
-            {item.label}
-          </Link>
-        ))}
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`font-medium transition-colors ${
+                isActive
+                  ? "text-primary-500 font-semibold"
+                  : "text-gray-700 hover:text-primary-500"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
 
-      {/* Mobile fixed trigger and menu */}
-      <div className="lg:hidden fixed top-3.5 end-4 sm:end-6 md:end-8 z-40">
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          aria-expanded={isOpen}
-          aria-label="فتح القائمة"
-          className="w-11 h-11 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 flex items-center justify-center text-gray-700 hover:text-gray-900 focus:outline-none active:shadow-sm shadow-md cursor-pointer active:scale-95"
+      {/* Mobile Backdrop */}
+      <div
+        onClick={() => setIsOpen(false)}
+        className={`fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden ${
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        aria-hidden="true"
+      />
+
+      {/* Mobile Morphing Menu */}
+      <div className="lg:hidden fixed top-3.5 end-4 sm:end-6 md:end-8 z-50">
+        <div
+          className={`relative bg-white border border-gray-200 overflow-hidden shadow-md origin-top-right rtl:origin-top-left transition-all ${
+            isOpen
+              ? "w-64 h-[236px] rounded-2xl shadow-xl border-gray-300/80 duration-400 ease-[cubic-bezier(0.34,1.35,0.64,1)]"
+              : "w-11 h-11 rounded-xl shadow-sm hover:border-gray-300 hover:bg-gray-50 active:scale-95 duration-300 ease-in-out"
+          }`}
         >
-          <Menu className="w-5 h-5" />
-        </button>
-
-        {isOpen && (
-          <div
-            onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-40 bg-black/40 transition-opacity"
-            aria-hidden="true"
-          />
-        )}
-
-        {isOpen && (
-          <div
-            className={`absolute top-0 end-0 z-50 w-64 max-w-[calc(100vw-2rem)] p-4 bg-white border border-gray-200 rounded-2xl shadow-xl transition-all duration-200 ease-out origin-top-right rtl:origin-top-left ${isOpen
-                ? "opacity-100 scale-100 pointer-events-auto"
-                : "opacity-0 scale-95 pointer-events-none"
-              }`}
+          {/* Animated 2-lines into X toggle button */}
+          <button
+            type="button"
+            onClick={() => setIsOpen((prev) => !prev)}
+            aria-expanded={isOpen}
+            aria-label={isOpen ? "إغلاق القائمة" : "فتح القائمة"}
+            className="w-11 h-11 absolute top-0 end-0 z-20 flex flex-col items-center justify-center gap-[5px] text-gray-700 hover:text-gray-900 focus:outline-none cursor-pointer rounded-xl hover:bg-gray-100/60 active:scale-95 transition-all"
           >
-            <div className="flex flex-col gap-3 w-full">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                <span className="text-sm font-semibold text-gray-800">القائمة</span>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  aria-label="إغلاق القائمة"
-                  className="p-1 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors focus:outline-none cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+            <span
+              className={`w-5 h-[2px] bg-gray-700 rounded-full transition-all duration-300 ease-in-out ${
+                isOpen ? "translate-y-[3.5px] rotate-45 bg-gray-800" : "translate-y-0"
+              }`}
+            />
+            <span
+              className={`w-5 h-[2px] bg-gray-700 rounded-full transition-all duration-300 ease-in-out ${
+                isOpen ? "-translate-y-[3.5px] -rotate-45 bg-gray-800" : "translate-y-0"
+              }`}
+            />
+          </button>
 
-              <nav className="flex flex-col gap-1">
-                {navItems.map((item) => (
+          {/* Menu Content (Header title + Nav links) */}
+          <div
+            className={`w-64 flex flex-col transition-all ${
+              isOpen
+                ? "opacity-100 translate-y-0 pointer-events-auto duration-300 delay-100 ease-out"
+                : "opacity-0 -translate-y-2 pointer-events-none duration-150 ease-in"
+            }`}
+          >
+            {/* Header Title */}
+            <div className="h-11 flex items-center ps-4 pe-11">
+              <span className="text-sm font-semibold text-gray-800">القائمة</span>
+            </div>
+            <div className="h-[1px] bg-gray-100 mx-3" />
+
+            {/* Navigation Links */}
+            <nav className="flex flex-col gap-1 p-2">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className="px-3 py-2 text-sm font-medium hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors rounded-lg"
+                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? "bg-primary-50 text-primary-600 font-semibold"
+                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    }`}
                   >
                     {item.label}
                   </Link>
-                ))}
-              </nav>
-            </div>
+                );
+              })}
+            </nav>
           </div>
-        )}
+        </div>
       </div>
     </>
   );

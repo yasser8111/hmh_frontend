@@ -8,7 +8,7 @@ const alexandria = Alexandria({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" dir="rtl" className={alexandria.variable}>
+    <html lang="ar" dir="rtl" className={alexandria.variable} data-scroll-behavior="smooth">
       <body
         className={`${alexandria.className} antialiased max-w-[1920px] mx-auto`}
       >
