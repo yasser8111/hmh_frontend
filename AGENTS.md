@@ -24,3 +24,9 @@
   - **Generous Whitespace & Clear Hierarchy**: Ample padding, crisp Alexandria Arabic typography, and structured grid cards.
   - **Subtle Micro-interactions**: Smooth hover state transitions, clear focus rings, and flat status badges.
 
+## 5. Code Comments & Documentation Guidelines
+- **Always in English**: All code comments and docstrings must strictly be written in English.
+- **Concise & Minimal**: Avoid excessive or line-by-line commentary on obvious code.
+- **Meaningful Only**: Only write comments when clarifying complex, non-obvious logic or key architecture decisions. Keep them short and essential.
+
+

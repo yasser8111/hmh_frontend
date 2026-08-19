@@ -48,7 +48,7 @@ function LoginForm() {
 
   return (
     <div className="w-full">
-      <h3 className="h3 mb-6">تسجيل الدخول</h3>
+      <h3 className="text-2xl sm:text-3xl font-bold leading-relaxed mb-6">تسجيل الدخول</h3>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Email / Phone Field */}
         <Input

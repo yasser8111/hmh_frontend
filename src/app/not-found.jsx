@@ -10,7 +10,7 @@ export default function NotFound() {
         </span>
 
         <div className="space-y-3 max-w-md">
-          <h3 className="h3">
+          <h3 className="text-2xl sm:text-3xl md:text-4xl xl:text-4xl font-bold leading-relaxed">
             عذراً، الصفحة غير موجودة
           </h3>
           <p className="text-sm sm:text-base text-gray-600 leading-relaxed">

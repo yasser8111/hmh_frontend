@@ -9,7 +9,7 @@ export function HeroSection() {
     <section id="hero" className="section flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 pt-28">
       {/* Text & Action Column */}
       <div className="flex-1 flex flex-col justify-center lg:gap-12 gap-6 w-full">
-        <h2 className="h2 leading-tight">
+        <h2 className="text-4xl sm:text-5xl md:text-6xl xl:text-6xl font-bold leading-tight">
           رعاية صحية متكاملة <br /> بأحدث المعايير الطبية
         </h2>
 
@@ -29,7 +29,7 @@ export function HeroSection() {
             { value: "+50K", label: "مريض تمت خدمتهم" },
           ].map((stat, index) => (
             <div key={index} className="flex flex-col">
-              <span dir="ltr" className="h3 text-right">{stat.value}</span>
+              <span dir="ltr" className="text-2xl sm:text-3xl md:text-4xl xl:text-4xl font-bold leading-relaxed text-right">{stat.value}</span>
               <span className="text-sm sm:text-base text-gray-600 mt-1">{stat.label}</span>
             </div>
           ))}
@@ -65,7 +65,7 @@ export function AboutSection() {
       </Card>
       <div className="flex-1 flex flex-col">
         <div className="flex-1 flex flex-col justify-center gap-4 lg:gap-6 lg:p-12 p-2">
-          <h2 className="h2">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl xl:text-6xl font-bold leading-relaxed">
             من نحن
           </h2>
           <p className="text-gray-600 text-base md:text-lg leading-relaxed">
@@ -104,7 +104,7 @@ export function DepartmentsSection() {
   return (
     <section id="departments" className="section grid  grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
       <div className="col-span-2 flex flex-col justify-center gap-4">
-        <h2 className="h2">
+        <h2 className="text-4xl sm:text-5xl md:text-6xl xl:text-6xl font-bold leading-relaxed">
           أقسامنا الطبية
         </h2>
 

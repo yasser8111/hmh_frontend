@@ -60,7 +60,7 @@ export default function SignUpPage() {
 
   return (
     <div className="w-full">
-      <h3 className="h3 mb-6">إنشاء حساب</h3>
+      <h3 className="text-2xl sm:text-3xl font-bold leading-relaxed mb-6">إنشاء حساب</h3>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
         {/* Full Name */}

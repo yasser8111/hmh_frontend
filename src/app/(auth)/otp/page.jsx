@@ -74,7 +74,7 @@ function OTPForm() {
 
   return (
     <div className="w-full flex flex-col gap-6">
-      <h3 className="h3 mb-6">رمز التحقق</h3>
+      <h3 className="text-2xl sm:text-3xl font-bold leading-relaxed mb-6">رمز التحقق</h3>
 
       <div className="flex justify-center my-2">
         <InputOTP
