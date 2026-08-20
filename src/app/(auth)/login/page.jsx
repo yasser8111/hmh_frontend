@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Input } from "@/components/ui";
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
 function LoginForm() {
   const router = useRouter();
@@ -90,6 +91,18 @@ function LoginForm() {
           </Button>
         </div>
       </form>
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 text-xs text-gray-400 mt-6">
+        <span className="flex-1 h-px bg-gray-200" />
+        <span>أو</span>
+        <span className="flex-1 h-px bg-gray-200" />
+      </div>
+
+      {/* Google Sign-In */}
+      <div className="mt-4">
+        <GoogleSignInButton onError={(msg) => setErrorMsg(msg)} />
+      </div>
 
       {/* Footer link to Sign up */}
       <p className="text-center text-sm text-gray-600 mt-6">

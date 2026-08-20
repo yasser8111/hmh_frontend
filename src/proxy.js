@@ -69,7 +69,11 @@ export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
   const isProtectedPath = pathname.startsWith("/app");
-  const isAuthPath = pathname === "/login" || pathname === "/signup" || pathname === "/otp";
+  const isAuthPath =
+    pathname === "/login" ||
+    pathname === "/signup" ||
+    pathname === "/otp" ||
+    pathname === "/complete-signup";
 
   if (isProtectedPath && !token) {
     const loginUrl = new URL("/login", request.url);
@@ -98,5 +102,5 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/login", "/signup", "/otp"],
+  matcher: ["/app/:path*", "/login", "/signup", "/otp", "/complete-signup"],
 };
