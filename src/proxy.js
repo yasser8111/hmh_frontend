@@ -9,14 +9,17 @@ const cookieOpts = {
   path: "/",
 };
 
-async function isTokenValid(token) {
-  if (!BACKEND_API) return false;
+function isTokenValid(token) {
+  if (!token) return false;
   try {
-    const res = await fetch(`${BACKEND_API}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    });
-    return res.ok;
+    const parts = token.split(".");
+    if (parts.length !== 3) return false;
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = atob(base64);
+    const payload = JSON.parse(jsonPayload);
+    if (!payload.exp) return true;
+    // Valid if current time has not passed expiration (with 10-second safety buffer)
+    return Date.now() < (payload.exp - 10) * 1000;
   } catch {
     return false;
   }

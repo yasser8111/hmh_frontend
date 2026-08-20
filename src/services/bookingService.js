@@ -4,22 +4,30 @@ const getBackendApi = () => {
   return (process.env.BACKEND_API || "").replace(/\/$/, "");
 };
 
-// Default cache revalidation time in seconds (1 hour)
-const CACHE_REVALIDATE_SECONDS = 3600;
+// In-memory cache for specialties (1 hour)
+const specialtiesCache = { data: null, expiry: 0 };
+const SPECIALTIES_TTL_MS = 60 * 60 * 1000;
 
 export const bookingService = {
-  // Fetch active medical specialties with Next.js data caching
+  // Fetch active medical specialties with in-memory caching
   async getSpecialties() {
+    if (specialtiesCache.data && Date.now() < specialtiesCache.expiry) {
+      return specialtiesCache.data;
+    }
+
     const backendApi = getBackendApi();
     if (!backendApi) return [];
 
     try {
       const res = await fetch(`${backendApi}/specialties?limit=100`, {
-        next: { revalidate: CACHE_REVALIDATE_SECONDS, tags: ["specialties"] },
+        cache: "no-store",
       });
       if (!res.ok) return [];
       const json = await res.json();
-      return json?.data || [];
+      const result = json?.data || [];
+      specialtiesCache.data = result;
+      specialtiesCache.expiry = Date.now() + SPECIALTIES_TTL_MS;
+      return result;
     } catch {
       return [];
     }

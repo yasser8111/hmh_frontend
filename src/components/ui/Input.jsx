@@ -19,7 +19,7 @@ export default function Input({
   const inputId = id || (label ? label.replace(/\s+/g, "-").toLowerCase() : undefined);
 
   // Style Variants
-  const baseInputStyles = "w-full px-4 py-4 lg:py-2.5 rounded-2xl border-2  text-sm text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:border-2 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed";
+  const baseInputStyles = "w-full px-4 py-2.5 rounded-2xl border-2  text-sm text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:border-2 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed";
 
   const borderStyles = error
     ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"

@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Phone, CreditCard, Building, Sun, Moon, Calendar, Clock, AlertCircle, Loader2 } from "lucide-react";
 import { Button, Card, Input, RadioCard, Textarea } from "@/components/ui";
+import DatePicker from "@/components/ui/DatePicker";
 import { doctorsService } from "@/services/doctorsService";
 import { getAvailableBookingDays, formatArabicDate } from "../utils/bookingDateUtils";
 import { getPeriodAvailabilityAndCrowd } from "../utils/scheduleUtils";
