@@ -18,7 +18,8 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
   const [patientName, setPatientName] = useState("");
   const [patientAge, setPatientAge] = useState("");
   const [whatsappPhone, setWhatsappPhone] = useState("");
-  const [preferredPeriod, setPreferredPeriod] = useState("morning");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [preferredPeriod, setPreferredPeriod] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("on_arrival");
   const [notes, setNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,9 +98,17 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
   const canProceed = useMemo(() => {
     if (currentStep === 1) return !!selectedSpecialty;
     if (currentStep === 2) return !!selectedDoctor;
-    if (currentStep === 3) return !!patientName.trim() && !!whatsappPhone.trim() && !isSubmitting;
+    if (currentStep === 3) {
+      return (
+        !!patientName.trim() &&
+        !!whatsappPhone.trim() &&
+        !!selectedDate &&
+        !!preferredPeriod &&
+        !isSubmitting
+      );
+    }
     return false;
-  }, [currentStep, selectedSpecialty, selectedDoctor, patientName, whatsappPhone, isSubmitting]);
+  }, [currentStep, selectedSpecialty, selectedDoctor, patientName, whatsappPhone, selectedDate, preferredPeriod, isSubmitting]);
 
   const selectSpecialty = (specialty) => {
     setSelectedSpecialty(specialty);
@@ -141,7 +150,8 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
     setPatientName("");
     setPatientAge("");
     setWhatsappPhone("");
-    setPreferredPeriod("morning");
+    setSelectedDate("");
+    setPreferredPeriod("");
     setPaymentMethod("on_arrival");
     setNotes("");
     setBookingResult(null);
@@ -149,13 +159,13 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
   };
 
   const handleSubmitBooking = async () => {
-    if (!patientName.trim() || !whatsappPhone.trim() || isSubmitting) return;
+    if (!patientName.trim() || !whatsappPhone.trim() || !selectedDate || !preferredPeriod || isSubmitting) return;
 
     setIsSubmitting(true);
 
     const payload = {
       doctor_id: selectedDoctor?.doctor_id,
-      date: new Date().toISOString().split("T")[0],
+      date: selectedDate,
       period: preferredPeriod,
       patient_name: patientName,
       patient_age: patientAge,
@@ -172,6 +182,7 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
         appointmentNumber: createdAppointment?.appointment_number || Math.floor(1 + Math.random() * 15),
         doctor: selectedDoctor,
         specialty: selectedSpecialty,
+        date: selectedDate,
         period: preferredPeriod === "morning" ? "الفترة الصباحية (8:30 ص - 1:30 م)" : "الفترة المسائية (4:30 م - 9:30 م)",
         patientName: patientName,
         patientAge: patientAge,
@@ -185,6 +196,7 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
         appointmentNumber: Math.floor(1 + Math.random() * 15),
         doctor: selectedDoctor,
         specialty: selectedSpecialty,
+        date: selectedDate,
         period: preferredPeriod === "morning" ? "الفترة الصباحية (8:30 ص - 1:30 م)" : "الفترة المسائية (4:30 م - 9:30 م)",
         patientName: patientName,
         patientAge: patientAge,
@@ -223,6 +235,8 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
     setPatientAge,
     whatsappPhone,
     setWhatsappPhone,
+    selectedDate,
+    setSelectedDate,
     preferredPeriod,
     setPreferredPeriod,
     paymentMethod,

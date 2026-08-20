@@ -47,6 +47,7 @@ export const bookingService = {
 
   // Delegated doctor methods for backward compatibility
   getDoctors: doctorsService.getDoctors,
+  getDoctorsNames: doctorsService.getDoctorsNames,
   getDoctorsPaginated: doctorsService.getDoctorsPaginated,
   getDoctorById: doctorsService.getDoctorById,
   getDoctorSchedule: doctorsService.getDoctorSchedule,

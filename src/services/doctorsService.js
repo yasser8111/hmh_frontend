@@ -113,4 +113,29 @@ export const doctorsService = {
       return null;
     }
   },
+
+  // Fetch slim doctor list (id + name + specialty only) for booking wizard
+  async getDoctorsNames(limit = 100) {
+    const backendApi = getBackendApi();
+    if (!backendApi) return [];
+
+    const safeLimit = Math.min(Math.max(Number(limit) || 100, 1), 100);
+
+    try {
+      const res = await fetch(`${backendApi}/doctors?limit=${safeLimit}`, {
+        next: { revalidate: CACHE_REVALIDATE_SECONDS, tags: ["doctors"] },
+      });
+      if (!res.ok) return [];
+      const json = await res.json();
+      const doctors = json?.data || [];
+      // Map to minimal shape needed by the booking wizard
+      return doctors.map(({ doctor_id, full_name_ar, specialty_id }) => ({
+        doctor_id,
+        full_name_ar,
+        specialty_id,
+      }));
+    } catch {
+      return [];
+    }
+  },
 };

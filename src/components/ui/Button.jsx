@@ -12,7 +12,7 @@ const variantStyles = {
 };
 
 const baseBtnStyles =
-  "inline-flex items-center justify-between gap-2.5 sm:gap-3 h-10 sm:h-12 rounded-xl sm:rounded-2xl font-medium transition-all duration-200 cursor-pointer select-none active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed text-sm sm:text-base border";
+  "inline-flex items-center justify-between gap-2.5 sm:gap-3 h-10 sm:h-12 rounded-xl sm:rounded-2xl font-medium transition-all duration-100 cursor-pointer select-none active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed text-sm sm:text-base border";
 
 export default function Button({
   children,

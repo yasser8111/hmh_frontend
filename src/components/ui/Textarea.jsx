@@ -1,23 +1,59 @@
 "use client";
 
-export default function Textarea({
-  label,
-  error,
-  helperText,
-  rows = 3,
-  className = "",
-  containerClassName = "",
-  id,
-  ...props
-}) {
+import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
+
+const Textarea = forwardRef(function Textarea(
+  {
+    label,
+    error,
+    helperText,
+    rows = 2,
+    className = "",
+    containerClassName = "",
+    id,
+    value,
+    defaultValue,
+    onChange,
+    onInput,
+    ...props
+  },
+  ref
+) {
+  const innerRef = useRef(null);
+  useImperativeHandle(ref, () => innerRef.current);
+
   const textareaId = id || (label ? label.replace(/\s+/g, "-").toLowerCase() : undefined);
 
+  // Auto-resize textarea height to match content
+  const adjustHeight = () => {
+    const textarea = innerRef.current;
+    if (!textarea) return;
+
+    textarea.style.height = "auto";
+    const borderOffset = textarea.offsetHeight - textarea.clientHeight;
+    textarea.style.height = `${textarea.scrollHeight + borderOffset}px`;
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [value, defaultValue]);
+
+  const handleInput = (e) => {
+    adjustHeight();
+    if (onInput) onInput(e);
+  };
+
+  const handleChange = (e) => {
+    adjustHeight();
+    if (onChange) onChange(e);
+  };
+
   const baseStyles =
-    "w-full px-4 py-3 rounded-2xl border-2 text-sm text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:border-2 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed resize-y";
+    "w-full px-4 py-3 rounded-2xl border-2 text-sm text-gray-900 bg-white placeholder:text-gray-400 transition-colors duration-200 focus:outline-none focus:border-2 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed resize-none";
 
   const borderStyles = error
-    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-    : "border-gray-200 hover:border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20";
+    ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
+    : "border-gray-200 hover:border-gray-300 focus:border-primary focus:ring-primary/20";
 
   return (
     <div className={`flex flex-col gap-1 w-full ${containerClassName}`}>
@@ -30,9 +66,13 @@ export default function Textarea({
 
       {/* Textarea */}
       <textarea
+        ref={innerRef}
         id={textareaId}
         rows={rows}
-        value={props.value !== undefined ? props.value : ""}
+        value={value}
+        defaultValue={defaultValue}
+        onInput={handleInput}
+        onChange={handleChange}
         className={`${baseStyles} ${borderStyles} ${className}`}
         {...props}
       />
@@ -45,4 +85,7 @@ export default function Textarea({
       ) : null}
     </div>
   );
-}
+});
+
+export default Textarea;
+
