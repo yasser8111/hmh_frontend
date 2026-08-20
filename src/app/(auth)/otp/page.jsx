@@ -3,22 +3,26 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, InputOTP } from "@/components/ui";
+import { Button, Input, InputOTP } from "@/components/ui";
 
 function OTPForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const emailOrPhone = searchParams.get("target") || "example@mail.com";
+  const initialPhone = searchParams.get("target") || "";
+  const userId = searchParams.get("user_id") || "";
 
+  const [phone, setPhone] = useState(initialPhone);
+  const [phoneInput, setPhoneInput] = useState(initialPhone);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [resendLoading, setResendLoading] = useState(false);
+  const [phoneLoading, setPhoneLoading] = useState(false);
 
   const handleVerify = async (codeToVerify) => {
     const code = codeToVerify || otp;
-    if (!code || code.length < 6) {
+    if (!phone || !code || code.length < 6) {
       setErrorMsg("يرجى إدخال الرمز المكون من 6 أرقام");
       return;
     }
@@ -30,7 +34,7 @@ function OTPForm() {
       const res = await fetch("/api/auth/otp/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emailOrPhone, otp: code }),
+        body: JSON.stringify({ phone, otp: code }),
       });
       const data = await res.json();
 
@@ -56,7 +60,7 @@ function OTPForm() {
       const res = await fetch("/api/auth/otp/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emailOrPhone }),
+        body: JSON.stringify({ phone }),
       });
       const data = await res.json();
 
@@ -72,9 +76,84 @@ function OTPForm() {
     }
   };
 
+  const handleUpdatePhone = async () => {
+    const newPhone = phoneInput.trim();
+    if (!newPhone) {
+      setErrorMsg("يرجى إدخال رقم الهاتف");
+      return;
+    }
+    if (!userId) {
+      setErrorMsg("غير قادر على تحديث رقم الهاتف");
+      return;
+    }
+
+    setPhoneLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    try {
+      const res = await fetch("/api/auth/signup/phone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, new_phone: newPhone }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success !== false) {
+        setPhone(newPhone);
+        setOtp("");
+        setSuccessMsg("تم تحديث رقم الهاتف وإرسال رمز تحقق جديد");
+      } else {
+        setErrorMsg(data.message || "فشل تحديث رقم الهاتف");
+      }
+    } catch (err) {
+      setErrorMsg("حدث خطأ أثناء تحديث رقم الهاتف");
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
+  const canEditPhone = Boolean(userId);
+
   return (
     <div className="w-full flex flex-col gap-6">
       <h3 className="text-2xl sm:text-3xl font-bold leading-relaxed mb-6">رمز التحقق</h3>
+
+      <p className="-mt-3 mb-2 text-center text-sm text-gray-500">
+        {phone ? (
+          <>
+            تم إرسال رمز التحقق إلى <span className="font-semibold text-gray-700" dir="ltr">{phone}</span>
+          </>
+        ) : (
+          "أدخل الرمز المرسل إلى رقم هاتفك"
+        )}
+      </p>
+
+      {canEditPhone && (
+        <div className="flex flex-col gap-2">
+          <Input
+            label="رقم الهاتف"
+            type="tel"
+            required
+            inputMode="numeric"
+            placeholder="77XXXXXXX"
+            dir="ltr"
+            value={phoneInput}
+            onChange={(e) => {
+              setPhoneInput(e.target.value);
+              if (errorMsg) setErrorMsg("");
+            }}
+          />
+          <button
+            type="button"
+            onClick={handleUpdatePhone}
+            disabled={phoneLoading || phoneInput.trim() === phone}
+            className="self-start text-xs text-primary hover:underline font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {phoneLoading ? "جاري التحديث..." : "تحديث الرقم وإعادة الإرسال"}
+          </button>
+        </div>
+      )}
 
       <div className="flex justify-center my-2">
         <InputOTP

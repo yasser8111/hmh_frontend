@@ -10,9 +10,12 @@ export default function SignUpPage() {
 
   const [formData, setFormData] = useState({
     fullName: "",
-    emailOrPhone: "",
+    email: "",
+    phone: "",
     password: "",
     confirmPassword: "",
+    gender: "M",
+    dateOfBirth: "",
     termsAccepted: false,
   });
 
@@ -33,20 +36,40 @@ export default function SignUpPage() {
       return;
     }
 
+    if (!formData.phone.trim()) {
+      setErrorMsg("يرجى إدخال رقم الهاتف للتحقق من الحساب");
+      return;
+    }
+
+    if (!formData.dateOfBirth) {
+      setErrorMsg("يرجى تحديد تاريخ الميلاد");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/siginup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          gender: formData.gender,
+          dateOfBirth: formData.dateOfBirth,
+        }),
       });
 
       const result = await res.json().catch(() => ({}));
 
-      if (res.ok && (result.success !== false)) {
-        // توجيه تلقائي ومباشر إلى صفحة تسجيل الدخول
-        router.push("/login");
+      if (res.ok && result.success !== false) {
+        const phone = result?.data?.phone || formData.phone.trim();
+        const userId = result?.data?.user_id
+          ? `&user_id=${encodeURIComponent(result.data.user_id)}`
+          : "";
+        router.push(`/otp?target=${encodeURIComponent(phone)}&from=signup${userId}`);
       } else {
         setErrorMsg(result.message || "حدث خطأ أثناء إنشاء الحساب");
       }
@@ -73,14 +96,25 @@ export default function SignUpPage() {
           onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
         />
 
-        {/* Email or Phone */}
+        {/* Email */}
         <Input
-          label="البريد الإلكتروني أو رقم الهاتف"
-          type="text"
+          label="البريد الإلكتروني"
+          type="email"
           required
           placeholder="example@mail.com"
-          value={formData.emailOrPhone}
-          onChange={(e) => setFormData({ ...formData, emailOrPhone: e.target.value })}
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
+
+        {/* Phone */}
+        <Input
+          label="رقم الهاتف"
+          type="tel"
+          required
+          inputMode="numeric"
+          placeholder="77XXXXXXX"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
         />
 
         {/* Password */}
@@ -101,6 +135,32 @@ export default function SignUpPage() {
           placeholder="••••••••"
           value={formData.confirmPassword}
           onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+        />
+
+        {/* Gender */}
+        <div className="flex flex-col gap-1 w-full">
+          <label htmlFor="gender" className="text-sm font-medium text-gray-700 select-none">
+            الجنس
+          </label>
+          <select
+            id="gender"
+            value={formData.gender}
+            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+            className="w-full px-4 py-4 lg:py-2.5 rounded-2xl border-2 border-gray-200 text-sm text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:border-primary hover:border-gray-300"
+          >
+            <option value="M">ذكر</option>
+            <option value="F">أنثى</option>
+          </select>
+        </div>
+
+        {/* Date of Birth */}
+        <Input
+          label="تاريخ الميلاد"
+          type="date"
+          required
+          value={formData.dateOfBirth}
+          max={new Date().toISOString().split("T")[0]}
+          onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
         />
 
         {/* Terms and conditions */}
