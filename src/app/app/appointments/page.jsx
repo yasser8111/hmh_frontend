@@ -16,7 +16,10 @@ export default async function AppointmentsPage() {
       <AppHeader />
 
       {/* 2. Main Page Content */}
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-6 lg:py-8 w-full">
+      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 w-full space-y-4 sm:space-y-6">
+        <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-950 text-center">
+          سجل المواعيد والحجوزات
+        </h1>
         <AppointmentsClient initialAppointments={appointments} />
       </div>
     </main>

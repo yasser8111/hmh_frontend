@@ -105,6 +105,7 @@
   animation: shake 0.4s ease-in-out;
 }
 
-/* .test {
+
+.animate-stagger{
   animation-delay: calc(sibling-index() * 0.1s);
-} */
+}

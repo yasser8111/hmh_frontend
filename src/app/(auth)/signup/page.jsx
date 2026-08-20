@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button, Input, Checkbox } from "@/components/ui";
+import { Button, Input, Checkbox, RadioCard, DatePicker } from "@/components/ui";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -138,25 +138,31 @@ export default function SignUpPage() {
         />
 
         {/* Gender */}
-        <div className="flex flex-col gap-1 w-full">
-          <label htmlFor="gender" className="text-sm font-medium text-gray-700 select-none">
+        <div className="flex flex-col gap-1.5 w-full">
+          <label className="text-sm font-medium text-gray-700 select-none">
             الجنس
           </label>
-          <select
-            id="gender"
-            value={formData.gender}
-            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-            className="w-full px-4 py-4 lg:py-2.5 rounded-2xl border-2 border-gray-200 text-sm text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:border-primary hover:border-gray-300"
-          >
-            <option value="M">ذكر</option>
-            <option value="F">أنثى</option>
-          </select>
+          <div className="grid grid-cols-2 gap-3">
+            <RadioCard
+              title="ذكر"
+              layout="vertical"
+              selected={formData.gender === "M"}
+              onClick={() => setFormData({ ...formData, gender: "M" })}
+              className="py-2 text-center items-center justify-center"
+            />
+            <RadioCard
+              title="أنثى"
+              layout="vertical"
+              selected={formData.gender === "F"}
+              onClick={() => setFormData({ ...formData, gender: "F" })}
+              className="py-3 px-4 text-center items-center justify-center"
+            />
+          </div>
         </div>
 
         {/* Date of Birth */}
-        <Input
+        <DatePicker
           label="تاريخ الميلاد"
-          type="date"
           required
           value={formData.dateOfBirth}
           max={new Date().toISOString().split("T")[0]}

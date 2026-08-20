@@ -4,11 +4,11 @@ import { Card } from "@/components/ui";
 
 export default function AuthLayout({ children }) {
   return (
-    <main className="section relative flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+    <main className="min-h-screen lg:h-screen w-full mx-auto flex flex-col lg:flex-row items-stretch justify-between relative lg:overflow-hidden">
       {/* Logo Top Right */}
       <Link
         href="/"
-        className="absolute top-4 sm:top-6 md:top-8 lg:top-10 right-4 sm:right-6 md:right-8 lg:right-10 z-20 shrink-0"
+        className="absolute top-6 sm:top-8 right-6 sm:right-8 z-20 shrink-0"
       >
         <Image
           src="/logo.png"
@@ -20,22 +20,26 @@ export default function AuthLayout({ children }) {
         />
       </Link>
 
-      {/* Form Column */}
-      <div className="flex-1 w-full max-w-md mx-auto flex flex-col justify-center pt-14 sm:pt-16 lg:pt-0">
-        {children}
+      {/* Form Column - Content on the Right */}
+      <div className="flex-1 w-full max-w-md mx-auto flex flex-col justify-start px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-0 lg:h-full lg:overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="w-full lg:mt-36 pb-12">
+          {children}
+        </div>
       </div>
 
-      {/* Image Card Column */}
-      <Card className="flex-1 w-full hidden lg:block self-stretch relative overflow-hidden">
-        <Image
-          src="/images/hero_doctor_patient.png"
-          alt="doctor"
-          fill
-          priority
-          sizes="50vw"
-          className="object-cover"
-        />
-      </Card>
+      {/* Image Column with dedicated padding */}
+      <div className="flex-1 w-full hidden lg:block p-4 sm:p-6 md:p-8 lg:p-10 h-full shrink-0">
+        <Card className="w-full h-full relative overflow-hidden border-0">
+          <Image
+            src="/images/hero_doctor_patient.png"
+            alt="doctor"
+            fill
+            priority
+            sizes="50vw"
+            className="object-cover"
+          />
+        </Card>
+      </div>
     </main>
   );
 }
