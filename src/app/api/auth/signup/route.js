@@ -6,7 +6,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     console.log(body);
-    const { fullName, email: rawEmail, phone: rawPhone, password, emailOrPhone } = body;
+    const { fullName, email: rawEmail, phone: rawPhone, password, emailOrPhone, gender = "M", dateOfBirth } = body;
 
     const email = (rawEmail ?? emailOrPhone ?? "").trim();
     const phone = (rawPhone ?? "").trim();
@@ -25,11 +25,18 @@ export async function POST(request) {
       );
     }
 
+    if (!dateOfBirth) {
+      return NextResponse.json(
+        { success: false, message: "يرجى تحديد تاريخ الميلاد" },
+        { status: 400 }
+      );
+    }
+
     const payload = {
       _id: crypto.randomUUID(),
       full_name: fullName.trim(),
-      gender: "male",
-      date_of_birth: "2000-01-01",
+      gender: gender === "F" || gender === "female" ? "female" : "male",
+      date_of_birth: dateOfBirth,
       phone,
       email,
       password,

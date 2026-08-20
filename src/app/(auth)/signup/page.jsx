@@ -14,6 +14,8 @@ export default function SignUpPage() {
     phone: "",
     password: "",
     confirmPassword: "",
+    gender: "M",
+    dateOfBirth: "",
     termsAccepted: false,
   });
 
@@ -39,13 +41,25 @@ export default function SignUpPage() {
       return;
     }
 
+    if (!formData.dateOfBirth) {
+      setErrorMsg("يرجى تحديد تاريخ الميلاد");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          gender: formData.gender,
+          dateOfBirth: formData.dateOfBirth,
+        }),
       });
 
       const result = await res.json().catch(() => ({}));
@@ -118,6 +132,32 @@ export default function SignUpPage() {
           placeholder="••••••••"
           value={formData.confirmPassword}
           onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+        />
+
+        {/* Gender */}
+        <div className="flex flex-col gap-1 w-full">
+          <label htmlFor="gender" className="text-sm font-medium text-gray-700 select-none">
+            الجنس
+          </label>
+          <select
+            id="gender"
+            value={formData.gender}
+            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+            className="w-full px-4 py-4 lg:py-2.5 rounded-2xl border-2 border-gray-200 text-sm text-gray-900 bg-white placeholder:text-gray-400 transition-all duration-200 focus:outline-none focus:border-primary hover:border-gray-300"
+          >
+            <option value="M">ذكر</option>
+            <option value="F">أنثى</option>
+          </select>
+        </div>
+
+        {/* Date of Birth */}
+        <Input
+          label="تاريخ الميلاد"
+          type="date"
+          required
+          value={formData.dateOfBirth}
+          max={new Date().toISOString().split("T")[0]}
+          onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
         />
 
         {/* Terms and conditions */}
