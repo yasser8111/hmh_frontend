@@ -57,11 +57,20 @@ async function tryRefreshToken(request) {
   }
 }
 
-function clearSession() {
-  const response = NextResponse.next();
+function clearCookies(response) {
   response.cookies.set("token", "", { ...cookieOpts, maxAge: 0 });
   response.cookies.set("refresh_token", "", { ...cookieOpts, maxAge: 0 });
   return response;
+}
+
+function clearSession() {
+  return clearCookies(NextResponse.next());
+}
+
+function loginRedirect(request, pathname) {
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.set("redirect", pathname);
+  return clearCookies(NextResponse.redirect(loginUrl));
 }
 
 export async function proxy(request) {
@@ -75,10 +84,24 @@ export async function proxy(request) {
     pathname === "/otp" ||
     pathname === "/complete-signup";
 
-  if (isProtectedPath && !token) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
+  if (isProtectedPath) {
+    if (!token) {
+      return loginRedirect(request, pathname);
+    }
+
+    const valid = await isTokenValid(token);
+    if (valid) {
+      return NextResponse.next();
+    }
+
+    // Stale/expired access token: try to refresh the session first
+    const refreshed = await tryRefreshToken(request);
+    if (refreshed) {
+      return refreshed;
+    }
+
+    // Refresh failed too: redirect to login and clear the cookies
+    return loginRedirect(request, pathname);
   }
 
   if (isAuthPath && token) {
