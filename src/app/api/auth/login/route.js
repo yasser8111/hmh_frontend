@@ -66,6 +66,7 @@ export async function POST(request) {
           success: false,
           needsVerification: true,
           phone: data?.phone || "",
+          user_id: data?.user_id || "",
           message: "هذا الحساب غير مفعّل. يرجى التحقق من رقم الهاتف",
         },
         { status: 403 }

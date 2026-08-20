@@ -66,7 +66,10 @@ export default function SignUpPage() {
 
       if (res.ok && result.success !== false) {
         const phone = result?.data?.phone || formData.phone.trim();
-        router.push(`/otp?target=${encodeURIComponent(phone)}&from=signup`);
+        const userId = result?.data?.user_id
+          ? `&user_id=${encodeURIComponent(result.data.user_id)}`
+          : "";
+        router.push(`/otp?target=${encodeURIComponent(phone)}&from=signup${userId}`);
       } else {
         setErrorMsg(result.message || "حدث خطأ أثناء إنشاء الحساب");
       }

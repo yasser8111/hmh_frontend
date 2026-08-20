@@ -38,7 +38,8 @@ function LoginForm() {
         router.refresh();
       } else if (result.needsVerification) {
         const target = result.phone || formData.emailOrPhone.trim();
-        router.push(`/otp?target=${encodeURIComponent(target)}&from=login`);
+        const userId = result.user_id ? `&user_id=${encodeURIComponent(result.user_id)}` : "";
+        router.push(`/otp?target=${encodeURIComponent(target)}&from=login${userId}`);
       } else {
         setErrorMsg(result.message || "فشل تسجيل الدخول");
       }
