@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const backendApi = process.env.BACKEND_API;
 
-export async function POST(request) {
+export async function GET() {
   if (!backendApi) {
     return NextResponse.json(
       { status: "error", message: "Backend API configuration is missing" },
@@ -10,14 +11,21 @@ export async function POST(request) {
     );
   }
 
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  if (!token) {
+    return NextResponse.json(
+      { status: "error", message: "Unauthorized - Token missing" },
+      { status: 401 }
+    );
+  }
+
   try {
-    const body = await request.json().catch(() => ({}));
-    const res = await fetch(`${backendApi}/auth/signup/phone`, {
-      method: "POST",
+    const res = await fetch(`${backendApi}/auth/me`, {
       headers: {
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(body),
       cache: "no-store",
     });
 
@@ -25,7 +33,7 @@ export async function POST(request) {
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
     return NextResponse.json(
-      { status: "error", message: error.message || "Failed to update signup phone" },
+      { status: "error", message: error.message || "Failed to fetch user profile" },
       { status: 502 }
     );
   }

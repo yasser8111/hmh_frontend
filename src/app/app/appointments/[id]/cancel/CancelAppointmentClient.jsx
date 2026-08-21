@@ -8,6 +8,8 @@ import Button from "@/components/ui/Button";
 import Textarea from "@/components/ui/Textarea";
 import RadioCard from "@/components/ui/RadioCard";
 
+import { useToast } from "@/components/ui/Toast";
+
 const CANCEL_REASONS = [
   { id: "urgent", title: "ظرف طارئ أو تغيير في المواعيد" },
   { id: "recovered", title: "تحسن الحالة الصحية والشفاء ولله الحمد" },
@@ -18,6 +20,7 @@ const CANCEL_REASONS = [
 
 export default function CancelAppointmentClient({ appointment }) {
   const router = useRouter();
+  const toast = useToast();
   const [selectedReasonId, setSelectedReasonId] = useState(CANCEL_REASONS[0].id);
   const [customNotes, setCustomNotes] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -26,18 +29,19 @@ export default function CancelAppointmentClient({ appointment }) {
   const handleConfirmCancel = async () => {
     setIsProcessing(true);
     try {
-      await appointmentsService.cancelAppointment(appointment.appointment_id);
-      setIsDone(true);
-      setTimeout(() => {
-        router.push("/app/appointments");
-        router.refresh();
-      }, 1500);
+      const res = await appointmentsService.cancelAppointment(appointment.appointment_id);
+      if (res.success) {
+        toast.success("تم إلغاء الموعد بنجاح", "تم تحديث حالة الحجز في سجلك الطبي");
+        setIsDone(true);
+        setTimeout(() => {
+          router.push("/app/appointments");
+          router.refresh();
+        }, 1200);
+      } else {
+        toast.error("تعذر إلغاء الموعد", res.message || "حدث خطأ أثناء الاتصال بالخادم");
+      }
     } catch {
-      setIsDone(true);
-      setTimeout(() => {
-        router.push("/app/appointments");
-        router.refresh();
-      }, 1500);
+      toast.error("فشل إلغاء الموعد", "يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً");
     } finally {
       setIsProcessing(false);
     }

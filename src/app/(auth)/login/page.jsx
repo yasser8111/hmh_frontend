@@ -6,8 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Input } from "@/components/ui";
 import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 
+import { useToast } from "@/components/ui/Toast";
+
 function LoginForm() {
   const router = useRouter();
+  const toast = useToast();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "/app";
 
@@ -31,21 +34,25 @@ function LoginForm() {
       });
 
       const result = await res.json();
-      console.log("Login Result:", result);
 
       if (result.success) {
+        toast.success("مرحباً بك مجدداً!", "تم تسجيل الدخول بنجاح");
         router.push(redirectUrl);
         router.refresh();
       } else if (result.needsVerification) {
+        toast.info("تأكيد الحساب", "يرجى إدخال رمز التحقق لتفعيل حسابك");
         const target = result.phone || formData.emailOrPhone.trim();
         const userId = result.user_id ? `&user_id=${encodeURIComponent(result.user_id)}` : "";
         router.push(`/otp?target=${encodeURIComponent(target)}&from=login${userId}`);
       } else {
-        setErrorMsg(result.message || "فشل تسجيل الدخول");
+        const msg = result.message || "فشل تسجيل الدخول. يرجى التحقق من البيانات";
+        setErrorMsg(msg);
+        toast.error("خطأ في تسجيل الدخول", msg);
       }
     } catch (err) {
-      console.error("Fetch error:", err);
-      setErrorMsg("حدث خطأ في الاتصال بالخادم");
+      const msg = "حدث خطأ أثناء الاتصال بالخادم";
+      setErrorMsg(msg);
+      toast.error("فشل الاتصال", msg);
     } finally {
       setLoading(false);
     }

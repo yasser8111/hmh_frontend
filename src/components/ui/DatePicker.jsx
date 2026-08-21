@@ -333,7 +333,7 @@ export default function DatePicker({
         <>
           {/* Backdrop click interceptor */}
           <div
-            className="fixed inset-0 z-[9998] bg-transparent"
+            className="fixed inset-0 z-9998 bg-transparent"
             onClick={() => {
               setIsOpen(false);
               setViewMode("days");
@@ -348,7 +348,7 @@ export default function DatePicker({
               left: `${coords.left}px`,
               width: `${coords.width}px`,
             }}
-            className="fixed z-[9999] bg-white rounded-3xl shadow-xl p-4 animate-in fade-in zoom-in-95 duration-150 select-none"
+            className="fixed z-9999 bg-white rounded-3xl shadow-xl p-4 animate-in fade-in zoom-in-95 duration-150 select-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Controls */}

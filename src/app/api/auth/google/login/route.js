@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const backendApi = (process.env.BACKEND_API || "").replace(/\/$/, "");
+const backendApi = process.env.BACKEND_API;
 
 const cookieOpts = {
   httpOnly: true,

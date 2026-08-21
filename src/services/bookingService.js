@@ -1,45 +1,18 @@
 import { doctorsService } from "./doctorsService";
+import { specialtiesService } from "./specialtiesService";
 
-const getBackendApi = () => {
-  return (process.env.BACKEND_API || "").replace(/\/$/, "");
-};
-
-// In-memory cache for specialties (1 hour)
-const specialtiesCache = { data: null, expiry: 0 };
-const SPECIALTIES_TTL_MS = 60 * 60 * 1000;
+const backendApi = process.env.BACKEND_API;
 
 export const bookingService = {
-  // Fetch active medical specialties with in-memory caching
-  async getSpecialties() {
-    if (specialtiesCache.data && Date.now() < specialtiesCache.expiry) {
-      return specialtiesCache.data;
-    }
+  // Fetch active medical specialties
+  getSpecialties: specialtiesService.getSpecialties,
 
-    const backendApi = getBackendApi();
-    if (!backendApi) return [];
-
-    try {
-      const res = await fetch(`${backendApi}/specialties?limit=100`, {
-        cache: "no-store",
-      });
-      if (!res.ok) return [];
-      const json = await res.json();
-      const result = json?.data || [];
-      specialtiesCache.data = result;
-      specialtiesCache.expiry = Date.now() + SPECIALTIES_TTL_MS;
-      return result;
-    } catch {
-      return [];
-    }
-  },
-
-  // Create new patient appointment
+  // Create new patient appointment (online)
   async createAppointment(payload) {
-    const backendApi = getBackendApi();
-    if (!backendApi) return null;
+    if (!payload) return null;
 
     try {
-      const res = await fetch(`${backendApi}/appointments`, {
+      const res = await fetch("/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -47,7 +20,7 @@ export const bookingService = {
 
       if (!res.ok) return null;
       const json = await res.json();
-      return json?.data || null;
+      return json?.data || json || null;
     } catch {
       return null;
     }

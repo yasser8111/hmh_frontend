@@ -4,9 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button, Input, Checkbox, RadioCard, DatePicker } from "@/components/ui";
+import { useToast } from "@/components/ui/Toast";
 
 export default function SignUpPage() {
   const router = useRouter();
+  const toast = useToast();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -27,22 +29,30 @@ export default function SignUpPage() {
     setErrorMsg("");
 
     if (formData.password !== formData.confirmPassword) {
-      setErrorMsg("كلمات المرور غير متطابقة");
+      const msg = "كلمات المرور غير متطابقة";
+      setErrorMsg(msg);
+      toast.warning("تطابق كلمة المرور", msg);
       return;
     }
 
     if (!formData.termsAccepted) {
-      setErrorMsg("يرجى الموافقة على الشروط والأحكام للمتابعة");
+      const msg = "يرجى الموافقة على الشروط والأحكام للمتابعة";
+      setErrorMsg(msg);
+      toast.warning("الشروط والأحكام", msg);
       return;
     }
 
     if (!formData.phone.trim()) {
-      setErrorMsg("يرجى إدخال رقم الهاتف للتحقق من الحساب");
+      const msg = "يرجى إدخال رقم الهاتف للتحقق من الحساب";
+      setErrorMsg(msg);
+      toast.warning("رقم الهاتف", msg);
       return;
     }
 
     if (!formData.dateOfBirth) {
-      setErrorMsg("يرجى تحديد تاريخ الميلاد");
+      const msg = "يرجى تحديد تاريخ الميلاد";
+      setErrorMsg(msg);
+      toast.warning("تاريخ الميلاد", msg);
       return;
     }
 
@@ -65,17 +75,21 @@ export default function SignUpPage() {
       const result = await res.json().catch(() => ({}));
 
       if (res.ok && result.success !== false) {
+        toast.success("تم إرسال رمز التحقق بنجاح", "يرجى إدخال الرمز لتفعيل حسابك");
         const phone = result?.data?.phone || formData.phone.trim();
         const userId = result?.data?.user_id
           ? `&user_id=${encodeURIComponent(result.data.user_id)}`
           : "";
         router.push(`/otp?target=${encodeURIComponent(phone)}&from=signup${userId}`);
       } else {
-        setErrorMsg(result.message || "حدث خطأ أثناء إنشاء الحساب");
+        const msg = result.message || "حدث خطأ أثناء إنشاء الحساب";
+        setErrorMsg(msg);
+        toast.error("فشل إنشاء الحساب", msg);
       }
     } catch (err) {
-      console.error("Signup request error:", err);
-      setErrorMsg("حدث خطأ في الاتصال بالخادم");
+      const msg = "حدث خطأ في الاتصال بالخادم";
+      setErrorMsg(msg);
+      toast.error("فشل الاتصال", msg);
     } finally {
       setLoading(false);
     }

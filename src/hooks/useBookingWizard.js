@@ -1,8 +1,7 @@
-"use client";
-
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { bookingService } from "@/services/bookingService";
+import { useToast } from "@/components/ui/Toast";
 
 export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] }) {
   const searchParams = useSearchParams();
@@ -158,51 +157,55 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
     setSearchQuery("");
   };
 
+  const toast = useToast();
+  const [bookingError, setBookingError] = useState("");
+
   const handleSubmitBooking = async () => {
-    if (!patientName.trim() || !whatsappPhone.trim() || !selectedDate || !preferredPeriod || isSubmitting) return;
+    if (!selectedDoctor?.doctor_id || !selectedDate || !preferredPeriod || isSubmitting) {
+      if (!selectedDoctor?.doctor_id) toast.warning("يرجى اختيار الطبيب", "حدد الطبيب للمتابعة");
+      else if (!selectedDate) toast.warning("يرجى تحديد التاريخ", "اختر تاريخ الموعد");
+      else if (!preferredPeriod) toast.warning("يرجى تحديد الفترة", "اختر الفترة الصباحية أو المسائية");
+      return;
+    }
 
     setIsSubmitting(true);
+    setBookingError("");
 
     const payload = {
-      doctor_id: selectedDoctor?.doctor_id,
+      doctor_id: selectedDoctor.doctor_id,
       date: selectedDate,
-      period: preferredPeriod,
-      patient_name: patientName,
-      patient_age: patientAge,
-      whatsapp_phone: whatsappPhone,
-      payment_method: paymentMethod,
-      notes: notes,
+      period: preferredPeriod, // "morning" or "evening"
     };
 
     try {
       const createdAppointment = await bookingService.createAppointment(payload);
 
-      setBookingResult({
-        appointmentId: createdAppointment?.appointment_id || "APT-" + Math.floor(1000 + Math.random() * 9000),
-        appointmentNumber: createdAppointment?.appointment_number || Math.floor(1 + Math.random() * 15),
-        doctor: selectedDoctor,
-        specialty: selectedSpecialty,
-        date: selectedDate,
-        period: preferredPeriod === "morning" ? "الفترة الصباحية (8:30 ص - 1:30 م)" : "الفترة المسائية (4:30 م - 9:30 م)",
-        patientName: patientName,
-        patientAge: patientAge,
-        whatsappPhone: whatsappPhone,
-        paymentMethod: paymentMethod === "on_arrival" ? "الدفع عند الحضور " : "دفع إلكتروني",
-      });
-    } catch {
-      // Fallback local result if backend is unreachable
-      setBookingResult({
-        appointmentId: "APT-" + Math.floor(1000 + Math.random() * 9000),
-        appointmentNumber: Math.floor(1 + Math.random() * 15),
-        doctor: selectedDoctor,
-        specialty: selectedSpecialty,
-        date: selectedDate,
-        period: preferredPeriod === "morning" ? "الفترة الصباحية (8:30 ص - 1:30 م)" : "الفترة المسائية (4:30 م - 9:30 م)",
-        patientName: patientName,
-        patientAge: patientAge,
-        whatsappPhone: whatsappPhone,
-        paymentMethod: paymentMethod === "on_arrival" ? "الدفع عند الحضور" : "دفع إلكتروني",
-      });
+      if (createdAppointment && (createdAppointment.appointment_id || createdAppointment.status)) {
+        toast.success(
+          "تم تأكيد الحجز بنجاح!",
+          `تم تسجيل موعدك برقم ${createdAppointment.appointment_id || ""}`
+        );
+
+        setBookingResult({
+          appointmentId: createdAppointment.appointment_id,
+          appointmentNumber: createdAppointment.appointment_number,
+          doctor: selectedDoctor,
+          specialty: selectedSpecialty,
+          date: selectedDate,
+          period: preferredPeriod === "morning" ? "الفترة الصباحية (8:30 ص - 1:30 م)" : "الفترة المسائية (4:30 م - 9:30 م)",
+          patientName: createdAppointment.patient_name || patientName,
+          whatsappPhone: createdAppointment.patient_phone || whatsappPhone,
+          paymentMethod: paymentMethod === "on_arrival" ? "الدفع عند الحضور" : "دفع إلكتروني",
+        });
+      } else {
+        const errorMsg = "تعذر إتمام الحجز. يرجى التأكد من تسجيل الدخول والاتصال بالإنترنت.";
+        setBookingError(errorMsg);
+        toast.error("فشل إتمام الحجز", errorMsg);
+      }
+    } catch (err) {
+      const errorMsg = err.message || "حدث خطأ أثناء إتمام الحجز. يرجى المحاولة مرة أخرى.";
+      setBookingError(errorMsg);
+      toast.error("فشل إتمام الحجز", errorMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -245,6 +248,7 @@ export function useBookingWizard({ initialSpecialties = [], initialDoctors = [] 
     setNotes,
     isSubmitting,
     bookingResult,
+    bookingError,
     handleSubmitBooking,
   };
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const BACKEND_API = (process.env.BACKEND_API || "").replace(/\/$/, "");
+const BACKEND_API = process.env.BACKEND_API;
 
 const cookieOpts = {
   httpOnly: true,
@@ -25,7 +25,7 @@ function isTokenValid(token) {
   }
 }
 
-async function tryRefreshToken(request) {
+async function tryRefreshToken(request, redirectPath = null) {
   const refreshToken = request.cookies.get("refresh_token")?.value;
   if (!refreshToken || !BACKEND_API) return null;
 
@@ -43,7 +43,10 @@ async function tryRefreshToken(request) {
     const accessToken = tokens?.access_token;
     if (!accessToken) return null;
 
-    const response = NextResponse.next();
+    const response = redirectPath
+      ? NextResponse.redirect(new URL(redirectPath, request.url))
+      : NextResponse.next();
+
     response.cookies.set("token", accessToken, {
       ...cookieOpts,
       maxAge: 60 * 60 * 24 * 7,
@@ -80,6 +83,27 @@ export async function proxy(request) {
   const token = request.cookies.get("token")?.value;
   const { pathname } = request.nextUrl;
 
+  // Root landing page: redirect to /app if authenticated, otherwise keep on /
+  if (pathname === "/") {
+    if (token) {
+      const valid = isTokenValid(token);
+      if (valid) {
+        return NextResponse.redirect(new URL("/app", request.url));
+      }
+
+      // Try refreshing if token has expired
+      const refreshed = await tryRefreshToken(request, "/app");
+      if (refreshed) {
+        return refreshed;
+      }
+
+      // Refresh failed: clear cookies and stay on landing page
+      return clearSession();
+    }
+
+    return NextResponse.next();
+  }
+
   const isProtectedPath = pathname.startsWith("/app");
   const isAuthPath =
     pathname === "/login" ||
@@ -92,7 +116,7 @@ export async function proxy(request) {
       return loginRedirect(request, pathname);
     }
 
-    const valid = await isTokenValid(token);
+    const valid = isTokenValid(token);
     if (valid) {
       return NextResponse.next();
     }
@@ -108,16 +132,16 @@ export async function proxy(request) {
   }
 
   if (isAuthPath && token) {
-    const valid = await isTokenValid(token);
+    const valid = isTokenValid(token);
 
     if (valid) {
       return NextResponse.redirect(new URL("/app", request.url));
     }
 
     // Stale/expired access token: try to refresh the session first
-    const refreshed = await tryRefreshToken(request);
+    const refreshed = await tryRefreshToken(request, "/app");
     if (refreshed) {
-      return NextResponse.redirect(new URL("/app", request.url));
+      return refreshed;
     }
 
     // Refresh failed too: let the user reach the auth page and clear the cookies
@@ -128,5 +152,5 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/app/:path*", "/login", "/signup", "/otp", "/complete-signup"],
+  matcher: ["/", "/app/:path*", "/login", "/signup", "/otp", "/complete-signup"],
 };

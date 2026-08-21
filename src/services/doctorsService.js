@@ -1,6 +1,4 @@
-const getBackendApi = () => {
-  return (process.env.BACKEND_API || "").replace(/\/$/, "");
-};
+const backendApi = process.env.BACKEND_API;
 
 // In-memory cache with TTL (10 minutes)
 const memoryCache = new Map();
@@ -21,7 +19,6 @@ function setCached(key, data) {
 export const doctorsService = {
   // Fetch active doctors list
   async getDoctors(options = 100) {
-    const backendApi = getBackendApi();
     if (!backendApi) return [];
 
     const rawLimit = typeof options === "number" ? options : options.limit || 100;
@@ -51,7 +48,6 @@ export const doctorsService = {
 
   // Fetch paginated doctors list with limit, offset, and specialty filter
   async getDoctorsPaginated({ limit = 12, offset = 0, specialtyId } = {}) {
-    const backendApi = getBackendApi();
     if (!backendApi) return { data: [], total: 0, limit: 12, offset: 0 };
 
     const safeLimit = Math.min(Math.max(Number(limit) || 12, 1), 100);
@@ -85,7 +81,6 @@ export const doctorsService = {
 
   // Fetch single doctor details by ID
   async getDoctorById(doctorId) {
-    const backendApi = getBackendApi();
     if (!backendApi || !doctorId) return null;
 
     const cacheKey = `doctor_${doctorId}`;
@@ -108,7 +103,6 @@ export const doctorsService = {
 
   // Fetch doctor weekly schedule
   async getDoctorSchedule(doctorId) {
-    const backendApi = getBackendApi();
     if (!backendApi || !doctorId) return [];
 
     const cacheKey = `schedule_${doctorId}`;
@@ -131,7 +125,6 @@ export const doctorsService = {
 
   // Fetch doctor availability for specific date and period
   async getDoctorAvailability(doctorId, date, period) {
-    const backendApi = getBackendApi();
     if (!backendApi || !doctorId || !date || !period) return null;
 
     try {
@@ -147,9 +140,8 @@ export const doctorsService = {
     }
   },
 
-  // Fetch slim doctor list (id + name + specialty only) for booking wizard
+  // Fetch slim doctor list for booking wizard
   async getDoctorsNames(limit = 100) {
-    const backendApi = getBackendApi();
     if (!backendApi) return [];
 
     const safeLimit = Math.min(Math.max(Number(limit) || 100, 1), 100);
@@ -173,6 +165,73 @@ export const doctorsService = {
       return result;
     } catch {
       return [];
+    }
+  },
+
+  // Create new doctor (admin)
+  async createDoctor(payload) {
+    try {
+      const res = await fetch("/api/doctors", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      memoryCache.clear();
+      return { success: res.ok, data: data?.data || data, message: data?.message };
+    } catch {
+      return { success: false, message: "فشل الاتصال بالخادم" };
+    }
+  },
+
+  // Update doctor (admin)
+  async updateDoctor(doctorId, payload) {
+    if (!doctorId) return { success: false };
+
+    try {
+      const res = await fetch(`/api/doctors/${encodeURIComponent(doctorId)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      memoryCache.clear();
+      return { success: res.ok, data: data?.data || data, message: data?.message };
+    } catch {
+      return { success: false, message: "فشل الاتصال بالخادم" };
+    }
+  },
+
+  // Delete doctor (admin)
+  async deleteDoctor(doctorId) {
+    if (!doctorId) return { success: false };
+
+    try {
+      const res = await fetch(`/api/doctors/${encodeURIComponent(doctorId)}`, {
+        method: "DELETE",
+      });
+      memoryCache.clear();
+      return { success: res.ok };
+    } catch {
+      return { success: false, message: "فشل الاتصال بالخادم" };
+    }
+  },
+
+  // Update doctor schedule (admin)
+  async updateDoctorSchedule(doctorId, schedulePayload) {
+    if (!doctorId) return { success: false };
+
+    try {
+      const res = await fetch(`/api/doctors/${encodeURIComponent(doctorId)}/schedule`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(schedulePayload),
+      });
+      const data = await res.json().catch(() => ({}));
+      memoryCache.clear();
+      return { success: res.ok, data: data?.data || data, message: data?.message };
+    } catch {
+      return { success: false, message: "فشل الاتصال بالخادم" };
     }
   },
 };

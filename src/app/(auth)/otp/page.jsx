@@ -4,9 +4,11 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, Input, InputOTP } from "@/components/ui";
+import { useToast } from "@/components/ui/Toast";
 
 function OTPForm() {
   const router = useRouter();
+  const toast = useToast();
   const searchParams = useSearchParams();
   const initialPhone = searchParams.get("target") || "";
   const userId = searchParams.get("user_id") || "";
@@ -23,7 +25,9 @@ function OTPForm() {
   const handleVerify = async (codeToVerify) => {
     const code = codeToVerify || otp;
     if (!phone || !code || code.length < 6) {
-      setErrorMsg("يرجى إدخال الرمز المكون من 6 أرقام");
+      const msg = "يرجى إدخال الرمز المكون من 6 أرقام";
+      setErrorMsg(msg);
+      toast.warning("رمز التحقق", msg);
       return;
     }
 
@@ -39,13 +43,18 @@ function OTPForm() {
       const data = await res.json();
 
       if (res.ok && data.success !== false) {
+        toast.success("تم تفعيل الحساب بنجاح!", "مرحباً بك في مستشفى حضرموت الحديث");
         router.push("/app");
         router.refresh();
       } else {
-        setErrorMsg(data.message || "رمز التحقق غير صحيح");
+        const msg = data.message || "رمز التحقق غير صحيح";
+        setErrorMsg(msg);
+        toast.error("خطأ في التحقق", msg);
       }
     } catch (err) {
-      setErrorMsg("حدث خطأ أثناء التحقق من الرمز");
+      const msg = "حدث خطأ أثناء التحقق من الرمز";
+      setErrorMsg(msg);
+      toast.error("فشل التحقق", msg);
     } finally {
       setLoading(false);
     }
@@ -65,12 +74,18 @@ function OTPForm() {
       const data = await res.json();
 
       if (res.ok && data.success !== false) {
-        setSuccessMsg("تمت إعادة إرسال رمز التحقق بنجاح");
+        const msg = "تمت إعادة إرسال رمز التحقق بنجاح";
+        setSuccessMsg(msg);
+        toast.info("إعادة إرسال الرمز", msg);
       } else {
-        setErrorMsg(data.message || "فشل إعادة إرسال الرمز");
+        const msg = data.message || "فشل إعادة إرسال الرمز";
+        setErrorMsg(msg);
+        toast.error("فشل الإرسال", msg);
       }
     } catch (err) {
-      setErrorMsg("حدث خطأ أثناء إعادة إرسال الرمز");
+      const msg = "حدث خطأ أثناء إعادة إرسال الرمز";
+      setErrorMsg(msg);
+      toast.error("فشل الاتصال", msg);
     } finally {
       setResendLoading(false);
     }
@@ -79,11 +94,15 @@ function OTPForm() {
   const handleUpdatePhone = async () => {
     const newPhone = phoneInput.trim();
     if (!newPhone) {
-      setErrorMsg("يرجى إدخال رقم الهاتف");
+      const msg = "يرجى إدخال رقم الهاتف";
+      setErrorMsg(msg);
+      toast.warning("رقم الهاتف", msg);
       return;
     }
     if (!userId) {
-      setErrorMsg("غير قادر على تحديث رقم الهاتف");
+      const msg = "غير قادر على تحديث رقم الهاتف";
+      setErrorMsg(msg);
+      toast.error("خطأ", msg);
       return;
     }
 
@@ -101,13 +120,18 @@ function OTPForm() {
 
       if (res.ok && data.success !== false) {
         setPhone(newPhone);
-        setOtp("");
-        setSuccessMsg("تم تحديث رقم الهاتف وإرسال رمز تحقق جديد");
+        const msg = "تم تحديث رقم الهاتف وإرسال رمز جديد";
+        setSuccessMsg(msg);
+        toast.success("تم التحديث بنجاح", msg);
       } else {
-        setErrorMsg(data.message || "فشل تحديث رقم الهاتف");
+        const msg = data.message || "فشل تحديث رقم الهاتف";
+        setErrorMsg(msg);
+        toast.error("فشل التحديث", msg);
       }
     } catch (err) {
-      setErrorMsg("حدث خطأ أثناء تحديث رقم الهاتف");
+      const msg = "حدث خطأ أثناء تحديث رقم الهاتف";
+      setErrorMsg(msg);
+      toast.error("فشل الاتصال", msg);
     } finally {
       setPhoneLoading(false);
     }

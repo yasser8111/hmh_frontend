@@ -79,6 +79,7 @@ export function StepThree({ wizard }) {
     notes,
     setNotes,
     isSubmitting,
+    bookingError,
     canProceed,
     prevStep,
     handleSubmitBooking,
@@ -395,6 +396,13 @@ export function StepThree({ wizard }) {
                 <p>• يرجى الحضور قبل الموعد بـ 15 دقيقة لتأكيد الدخول.</p>
               </div>
             </div>
+
+            {bookingError && (
+              <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+                <span>{bookingError}</span>
+              </div>
+            )}
           </Card>
         </div>
       </div>

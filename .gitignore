@@ -16,10 +16,12 @@
 # next.js
 /.next/
 /out/
+
 # agents
 .agents
 .agents/
 AGENTS.md
+# DESIGN_SYSTEM.md
 
 # production
 /build

@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState, useCallback, useRef } from "react";
 import Button from "@/components/ui/Button";
 
+import { useToast } from "@/components/ui/Toast";
+
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
 function GoogleIcon({ className = "size-5 shrink-0" }) {
@@ -32,6 +34,7 @@ function GoogleIcon({ className = "size-5 shrink-0" }) {
 
 export default function GoogleSignInButton({ onError, children, className = "" }) {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [googleReady, setGoogleReady] = useState(false);
   const googleBtnRef = useRef(null);
@@ -40,7 +43,9 @@ export default function GoogleSignInButton({ onError, children, className = "" }
     async (response) => {
       const credential = response?.credential;
       if (!credential) {
-        onError?.("تعذر الحصول على بيانات تسجيل الدخول من Google");
+        const msg = "تعذر الحصول على بيانات تسجيل الدخول من Google";
+        toast.error("Google Sign-In", msg);
+        onError?.(msg);
         return;
       }
 
@@ -54,28 +59,34 @@ export default function GoogleSignInButton({ onError, children, className = "" }
         const result = await res.json();
 
         if (result.needsVerification) {
+          toast.info("تأكيد الحساب", "يرجى التحقق من رقم الهاتف");
           const phone = result.phone || "";
           router.push(`/otp?target=${encodeURIComponent(phone)}&from=google`);
         } else if (result.status === "success" || (res.ok && result.success)) {
+          toast.success("مرحباً بك!", "تم تسجيل الدخول بحساب Google بنجاح");
           router.push("/app");
           router.refresh();
         } else if (result.status === "needs_signup" && result.signup_payload) {
+          toast.info("إكمال البيانات", "يرجى إكمال بيانات التسجيل");
           sessionStorage.setItem(
             "oauth_signup_data",
             JSON.stringify(result.signup_payload)
           );
           router.push("/complete-signup");
         } else {
-          onError?.(result.message || "فشل تسجيل الدخول عبر Google");
+          const msg = result.message || "فشل تسجيل الدخول عبر Google";
+          toast.error("Google Sign-In", msg);
+          onError?.(msg);
         }
       } catch (err) {
-        console.error("Google OAuth error:", err);
-        onError?.("حدث خطأ في الاتصال بالخادم");
+        const msg = "حدث خطأ في الاتصال بالخادم";
+        toast.error("فشل الاتصال", msg);
+        onError?.(msg);
       } finally {
         setLoading(false);
       }
     },
-    [router, onError]
+    [router, onError, toast]
   );
 
   const initGoogle = useCallback(() => {

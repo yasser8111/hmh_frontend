@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const backendApi = process.env.BACKEND_API;
 
-export async function POST(request) {
+export async function GET() {
   if (!backendApi) {
     return NextResponse.json(
       { status: "error", message: "Backend API configuration is missing" },
@@ -11,13 +11,7 @@ export async function POST(request) {
   }
 
   try {
-    const body = await request.json().catch(() => ({}));
-    const res = await fetch(`${backendApi}/auth/signup/phone`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+    const res = await fetch(`${backendApi}/health`, {
       cache: "no-store",
     });
 
@@ -25,7 +19,7 @@ export async function POST(request) {
     return NextResponse.json(data, { status: res.status });
   } catch (error) {
     return NextResponse.json(
-      { status: "error", message: error.message || "Failed to update signup phone" },
+      { status: "error", message: error.message || "Backend service is unreachable" },
       { status: 502 }
     );
   }

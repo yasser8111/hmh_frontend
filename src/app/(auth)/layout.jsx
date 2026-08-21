@@ -21,7 +21,7 @@ export default function AuthLayout({ children }) {
       </Link>
 
       {/* Form Column - Content on the Right */}
-      <div className="flex-1 w-full max-w-md mx-auto flex flex-col justify-start px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-0 lg:h-full lg:overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex-1 w-full max-w-md mx-auto flex flex-col justify-start px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-0 lg:h-full lg:overflow-y-auto scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="w-full lg:mt-36 pb-12">
           {children}
         </div>
