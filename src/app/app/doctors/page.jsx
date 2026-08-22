@@ -82,7 +82,7 @@ export default async function DoctorsPage({ searchParams }) {
 
       {/* 2. Main Content */}
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 w-full space-y-4 sm:space-y-6">
-        <TitlePage title="دليل الأطباء والاستشاريين" />
+        <TitlePage title="دليل الأطباء والاستشاريين" backLink={"/app"} />
         <Suspense key={`${page}-${specialtyId}`} fallback={<DoctorsSkeleton />}>
           <DoctorsPageContainer page={page} specialtyId={specialtyId} />
         </Suspense>

@@ -18,7 +18,9 @@ export default async function AppointmentsPage() {
 
       {/* 2. Main Page Content */}
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 w-full space-y-4 sm:space-y-6">
-        <TitlePage title="سجل المواعيد والحجوزات" />
+        <TitlePage title="سجل المواعيد والحجوزات"
+          backLink={"/app"}
+        />
         <AppointmentsClient initialAppointments={appointments} />
       </div>
     </main>

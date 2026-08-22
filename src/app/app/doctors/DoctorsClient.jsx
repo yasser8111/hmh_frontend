@@ -32,12 +32,6 @@ export default function DoctorsClient({
       {/* 1. Header & Filters Section */}
       <Card className="bg-white border-2 border-white p-4 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold text-gray-950">
-              أطباء واستشاريو المستشفى
-            </h1>
-          </div>
-
           {/* Search Input */}
           <div className="w-full sm:w-72">
             <SearchBar
@@ -45,6 +39,7 @@ export default function DoctorsClient({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               size="md"
+              containerClassName="border-gray-100"
             />
           </div>
         </div>

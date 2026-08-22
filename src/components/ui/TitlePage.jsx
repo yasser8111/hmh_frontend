@@ -37,7 +37,7 @@ export default function TitlePage({
         <div className="pb-1">
           <Link
             href={backLink}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-primary-700 transition-colors group cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-primary-500 transition-colors group cursor-pointer"
           >
             <ArrowRight className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
             <span>{backLabel}</span>
