@@ -298,9 +298,8 @@ export default function DatePicker({
             handleInputClick();
           }
         }}
-        className={`${baseInputStyles} ${borderStyles} ${
-          disabled ? "bg-gray-50 opacity-60 cursor-not-allowed" : ""
-        } ${className}`}
+        className={`${baseInputStyles} ${borderStyles} ${disabled ? "bg-gray-50 opacity-60 cursor-not-allowed" : ""
+          } ${className}`}
       >
         <div className="flex items-center gap-2.5 truncate">
           <CalendarIcon className="size-5 text-gray-400 shrink-0" />
@@ -461,15 +460,14 @@ export default function DatePicker({
                         type="button"
                         disabled={disabledDay}
                         onClick={() => handleSelectDay(day)}
-                        className={`h-8 sm:h-9 text-xs rounded-xl flex items-center justify-center font-medium transition-all duration-100 select-none cursor-pointer ${
-                          disabledDay
+                        className={`h-8 sm:h-9 text-xs rounded-xl flex items-center justify-center font-medium transition-all duration-100 select-none cursor-pointer ${disabledDay
                             ? "text-gray-300 cursor-not-allowed"
                             : isSelected
-                            ? "bg-primary-500 text-white font-bold shadow-xs scale-105"
-                            : isToday
-                            ? "border-2 border-primary-400 text-primary-600 font-bold hover:bg-primary-50"
-                            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 active:scale-95"
-                        }`}
+                              ? "bg-primary-500 text-white font-bold shadow-xs scale-105"
+                              : isToday
+                                ? "border-2 border-primary-400 text-primary-600 font-bold hover:bg-primary-50"
+                                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 active:scale-95"
+                          }`}
                       >
                         {day}
                       </button>
@@ -492,11 +490,10 @@ export default function DatePicker({
                         setCurrentMonth(idx);
                         setViewMode("days");
                       }}
-                      className={`py-2 text-xs rounded-xl font-medium transition-colors cursor-pointer ${
-                        isSelected
+                      className={`py-2 text-xs rounded-xl font-medium transition-colors cursor-pointer ${isSelected
                           ? "bg-primary-500 text-white font-bold"
                           : "bg-gray-50 text-gray-700 hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {mName}
                     </button>
@@ -518,11 +515,10 @@ export default function DatePicker({
                         setCurrentYear(y);
                         setViewMode("months");
                       }}
-                      className={`py-2 text-xs rounded-xl font-medium transition-colors cursor-pointer ${
-                        isSelected
+                      className={`py-2 text-xs rounded-xl font-medium transition-colors cursor-pointer ${isSelected
                           ? "bg-primary-500 text-white font-bold"
                           : "bg-gray-50 text-gray-700 hover:bg-gray-100"
-                      }`}
+                        }`}
                     >
                       {y}
                     </button>

@@ -124,8 +124,8 @@ export default function CancelAppointmentModal({
               {appointment.period === "morning"
                 ? "الصباح"
                 : appointment.period === "evening"
-                ? "المساء"
-                : appointment.period}
+                  ? "المساء"
+                  : appointment.period}
               )
             </span>
           </div>

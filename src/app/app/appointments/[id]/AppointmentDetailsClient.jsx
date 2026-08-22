@@ -101,7 +101,7 @@ export default function AppointmentDetailsClient({ initialAppointment }) {
   return (
     <div className="space-y-6">
       {/* Main Ticket Card */}
-      <Card className="bg-white border-2 border-white p-5 sm:p-7 space-y-6 shadow-2xs">
+      <Card className="bg-white border-2 border-white p-5 sm:p-7 space-y-6">
         {/* Status Header */}
         <div className="flex items-center justify-between">
           <span className="text-sm font-bold text-gray-950">

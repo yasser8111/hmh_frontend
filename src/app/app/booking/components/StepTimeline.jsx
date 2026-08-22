@@ -31,9 +31,9 @@ export function StepTimeline({ currentStep = 1 }) {
                 <div
                   className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all duration-300 ${
                     isActive
-                      ? "bg-primary-500 text-white shadow-md shadow-primary-500/25 ring-4 ring-primary-100 scale-105"
+                      ? "bg-primary-500 text-white ring-4 ring-primary-100 scale-105"
                       : isCompleted
-                      ? "bg-emerald-500 text-white ring-4 ring-emerald-50 shadow-xs"
+                      ? "bg-emerald-500 text-white ring-4 ring-emerald-50"
                       : "bg-white border-2 border-gray-300 text-gray-400"
                   }`}
                 >

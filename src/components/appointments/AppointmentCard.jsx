@@ -68,7 +68,7 @@ export default function AppointmentCard({
   return (
     <Card
       link={`/app/appointments/${encodeURIComponent(appointment.appointment_id)}`}
-      className={`w-full bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 transition-all duration-200 shadow-2xs hover:shadow-xs group cursor-pointer block select-none active:scale-[0.99] ${className}`}
+      className={`w-full bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 transition-all duration-200 group cursor-pointer block select-none active:scale-[0.99] ${className}`}
     >
       <div className="flex items-start justify-between gap-4">
         {/* Doctor Icon & Details */}

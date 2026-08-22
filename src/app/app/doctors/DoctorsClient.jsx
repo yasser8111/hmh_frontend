@@ -57,7 +57,7 @@ export default function DoctorsClient({
               onClick={() => handleSpecialtyChange("all")}
               className={`px-4 py-2 rounded-2xl text-xs font-semibold shrink-0 transition-all cursor-pointer select-none active:scale-[0.98] ${
                 selectedSpecialtyId === "all"
-                  ? "bg-primary-500 text-white shadow-xs"
+                  ? "bg-primary-500 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
               }`}
             >
@@ -74,7 +74,7 @@ export default function DoctorsClient({
                   onClick={() => handleSpecialtyChange(spec.specialty_id)}
                   className={`px-4 py-2 rounded-2xl text-xs font-semibold shrink-0 transition-all cursor-pointer select-none active:scale-[0.98] ${
                     isSelected
-                      ? "bg-primary-500 text-white shadow-xs"
+                      ? "bg-primary-500 text-white"
                       : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200"
                   }`}
                 >
@@ -98,7 +98,7 @@ export default function DoctorsClient({
                 <Link
                   key={doctor.doctor_id}
                   href={`/app/doctors/${doctor.doctor_id}`}
-                  className="bg-white rounded-2xl border-2 border-white overflow-hidden flex flex-col justify-between hover:border-primary-200 transition-all cursor-pointer group shadow-xs touch-manipulation select-none active:scale-[0.98]"
+                  className="bg-white rounded-2xl border-2 border-white overflow-hidden flex flex-col justify-between hover:border-primary-200 transition-all cursor-pointer group touch-manipulation select-none active:scale-[0.98]"
                 >
                   {/* Top Edge-to-Edge Image */}
                   <div className="w-full aspect-[4/3] bg-primary-50/60 overflow-hidden relative flex items-center justify-center">
@@ -141,7 +141,7 @@ export default function DoctorsClient({
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center transition-all ${
                   currentPage === 1
                     ? "opacity-40 cursor-not-allowed text-gray-300"
-                    : "text-gray-700 hover:bg-gray-50 hover:border-gray-300 cursor-pointer active:scale-95 shadow-2xs"
+                    : "text-gray-700 hover:bg-gray-50 hover:border-gray-300 cursor-pointer active:scale-95"
                 }`}
               >
                 <ChevronRight className="w-4 h-4" />
@@ -169,8 +169,8 @@ export default function DoctorsClient({
                     onClick={() => handlePageChange(page)}
                     className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center transition-all cursor-pointer select-none active:scale-95 ${
                       isActive
-                        ? "bg-primary-500 text-white border border-primary-500 shadow-xs font-bold"
-                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300 shadow-2xs"
+                        ? "bg-primary-500 text-white border border-primary-500 font-bold"
+                        : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     {page}
@@ -187,7 +187,7 @@ export default function DoctorsClient({
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center transition-all ${
                   currentPage >= totalPages
                     ? "opacity-40 cursor-not-allowed text-gray-300"
-                    : "text-gray-700 hover:bg-gray-50 hover:border-gray-300 cursor-pointer active:scale-95 shadow-2xs"
+                    : "text-gray-700 hover:bg-gray-50 hover:border-gray-300 cursor-pointer active:scale-95"
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />

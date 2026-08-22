@@ -29,9 +29,8 @@ export default function TitlePage({
 
   return (
     <div
-      className={`pt-1 sm:pt-2 pb-1 sm:pb-2 space-y-1 sm:space-y-1.5 ${
-        alignStyles[align] || "text-right"
-      } ${className}`}
+      className={`pt-1 sm:pt-2 pb-1 sm:pb-2 space-y-1 sm:space-y-1.5 ${alignStyles[align] || "text-right"
+        } ${className}`}
       {...props}
     >
       {backLink && (

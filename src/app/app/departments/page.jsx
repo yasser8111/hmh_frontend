@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Building2, Stethoscope, ChevronLeft, ArrowLeft, CalendarPlus } from "lucide-react";
+import { Building2, Stethoscope, ChevronLeft, CalendarPlus } from "lucide-react";
 import AppHeader from "@/components/layout/AppHeader";
-import { Card, Button } from "@/components/ui";
+import { TitlePage, Card, Button } from "@/components/ui";
 import { specialtiesService } from "@/services/specialtiesService";
 
 export const metadata = {
@@ -13,26 +13,17 @@ export default async function DepartmentsPage() {
   const specialties = await specialtiesService.getSpecialties();
 
   return (
-    <main className="min-h-screen bg-gray-50/60 flex flex-col pb-12">
+    <main className="bg-primary-50/50 min-h-screen flex flex-col pb-12">
       <AppHeader />
 
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full space-y-6 sm:space-y-8">
-        
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-gray-200/80 rounded-2xl p-5 sm:p-6 shadow-2xs">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                <Building2 className="w-4 h-4" />
-              </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-950">
-                الأقسام والعيادات التخصصية
-              </h1>
-            </div>
-            <p className="text-xs sm:text-sm text-gray-500">
-              تصفح التخصصات الطبية والمراكز العلاجية المعتمدة في المستشفى
-            </p>
-          </div>
+      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 lg:py-8 w-full space-y-6 sm:space-y-8">
+        {/* Page Title */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <TitlePage
+            title="الأقسام والعيادات التخصصية"
+            backLink="/app"
+            backLabel="الرئيسية"
+          />
 
           <div className="flex items-center gap-3 shrink-0">
             <Button
@@ -51,9 +42,9 @@ export default async function DepartmentsPage() {
         {specialties.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {specialties.map((specialty) => (
-              <div
+              <Card
                 key={specialty.specialty_id}
-                className="bg-white border border-gray-200/90 hover:border-amber-300 rounded-2xl p-5 flex flex-col justify-between gap-4 transition-all duration-200 group shadow-2xs hover:shadow-xs"
+                className="bg-white border-2 border-white hover:border-amber-300 rounded-2xl p-5 flex flex-col justify-between gap-4 transition-all duration-200 group"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
@@ -94,15 +85,14 @@ export default async function DepartmentsPage() {
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </Link>
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center text-gray-400">
+          <Card className="bg-white border-2 border-white rounded-2xl p-12 text-center text-gray-400">
             لا توجد أقسام مسجلة حالياً.
-          </div>
+          </Card>
         )}
-
       </div>
     </main>
   );

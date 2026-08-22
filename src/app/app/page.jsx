@@ -1,11 +1,13 @@
 import Link from "next/link";
 import {
+  CalendarX2,
   Calendar,
   CalendarPlus,
   Building2,
   Clock,
   ChevronLeft,
   User,
+  Stethoscope,
   PhoneCall,
 } from "lucide-react";
 import AppHeader from "@/components/layout/AppHeader";
@@ -71,13 +73,13 @@ export default async function AppPage() {
           {nextAppointment ? (
             <AppointmentCard appointment={nextAppointment} />
           ) : (
-            <Card className="bg-white border-2 border-white p-6 text-center space-y-3 shadow-2xs">
+            <Card className="bg-white border-2 border-white p-6 text-center space-y-3 -2xs lg:py-6">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-primary-50 text-primary-500 flex items-center justify-center">
-                <Calendar className="w-6 h-6" />
+                <CalendarX2 className="w-6 h-6" />
               </div>
               <div className="space-y-1">
                 <h3 className="text-base font-bold text-gray-900">لا توجد مواعيد قادمة</h3>
-                <p className="text-xs sm:text-sm text-gray-500 max-w-md mx-auto">
+                <p className="text-xs sm:text-sm text-gray-500 max-w-md mx-auto text-balance">
                   يمكنك حجز استشارتك الطبية واختيار الطبيب والتوقيت المناسب بكل سهولة ومتابعة حالة حجزك فوراً.
                 </p>
               </div>
@@ -85,10 +87,9 @@ export default async function AppPage() {
                 <Button
                   variant="primary"
                   size="md"
-                  startIcon={<CalendarPlus className="w-4 h-4" />}
                   link="/app/booking"
                 >
-                  احجز موعدك الطبي الآن
+                  احجز موعدك الآن
                 </Button>
               </div>
             </Card>
@@ -98,8 +99,9 @@ export default async function AppPage() {
         {/* 3. Quick Action Navigation Cards (2x2 Grid) */}
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-base sm:text-lg font-bold text-gray-900">
-              الخدمات الطبية السريعة
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
+              <Stethoscope className="w-5 h-5 text-primary-500" />
+              <span>الخدمات الطبية السريعة</span>
             </h2>
           </div>
 
@@ -107,7 +109,7 @@ export default async function AppPage() {
             {/* Card 1: Book New Appointment */}
             <Card
               link="/app/booking"
-              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 -2xs hover:-xs cursor-pointer block select-none active:scale-[0.98]"
             >
               <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                 <CalendarPlus className="w-5 h-5" />
@@ -125,7 +127,7 @@ export default async function AppPage() {
             {/* Card 2: Doctors Guide */}
             <Card
               link="/app/doctors"
-              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 -2xs hover:-xs cursor-pointer block select-none active:scale-[0.98]"
             >
               <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                 <User className="w-5 h-5" />
@@ -143,7 +145,7 @@ export default async function AppPage() {
             {/* Card 3: Medical Departments */}
             <Card
               link="/app/departments"
-              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 -2xs hover:-xs cursor-pointer block select-none active:scale-[0.98]"
             >
               <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                 <Building2 className="w-5 h-5" />
@@ -161,7 +163,7 @@ export default async function AppPage() {
             {/* Card 4: Appointments Records */}
             <Card
               link="/app/appointments"
-              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 -2xs hover:-xs cursor-pointer block select-none active:scale-[0.98]"
             >
               <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                 <Clock className="w-5 h-5" />
@@ -184,7 +186,7 @@ export default async function AppPage() {
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-base sm:text-lg font-bold text-gray-900 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-gray-600" />
+              <Clock className="w-5 h-5 text-primary-500" />
               <span>آخر الحجوزات والمواعيد</span>
             </h2>
             {appointments.length > 0 && (
@@ -208,14 +210,14 @@ export default async function AppPage() {
               ))}
             </div>
           ) : (
-            <Card className="bg-white border-2 border-white p-6 text-center text-gray-400 text-sm">
+            <Card className="bg-white border-2 border-white p-6 lg:p-12 text-center text-gray-400 text-sm">
               لا توجد حجوزات سابقة مسجلة.
             </Card>
           )}
         </section>
 
         {/* 5. 24/7 Emergency & Contact Banner */}
-        <Card className="bg-white border-2 border-white p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+        <Card className="bg-white border-2 border-white p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3.5 text-right w-full sm:w-auto">
             <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 shrink-0">
               <PhoneCall className="w-5 h-5" />

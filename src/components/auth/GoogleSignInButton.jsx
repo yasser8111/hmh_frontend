@@ -51,6 +51,26 @@ export default function GoogleSignInButton({ onError, children, className = "" }
 
       setLoading(true);
       try {
+        // Extract Google picture if present in credential JWT
+        try {
+          const base64Url = credential.split(".")[1];
+          if (base64Url) {
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split("")
+                .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                .join("")
+            );
+            const parsed = JSON.parse(jsonPayload);
+            if (parsed?.picture) {
+              localStorage.setItem("user_avatar", parsed.picture);
+            }
+          }
+        } catch {
+          // Ignore parsing errors
+        }
+
         const res = await fetch("/api/auth/google/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

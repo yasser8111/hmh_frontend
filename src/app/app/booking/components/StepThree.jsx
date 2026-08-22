@@ -18,7 +18,7 @@ function PeriodCard({ title, time, icon: Icon, crowd, selected, disabled, isLock
           : isLocked
             ? "border-gray-200 bg-gray-50/40 hover:border-gray-300 cursor-pointer"
             : selected
-              ? "bg-primary-50/80 border-primary-500 cursor-pointer shadow-xs"
+              ? "bg-primary-50/80 border-primary-500 cursor-pointer"
               : "bg-white border-gray-200 hover:border-primary-200 cursor-pointer"
         }`}
     >
@@ -231,7 +231,7 @@ export function StepThree({ wizard }) {
                         if (selectedDate !== day.dateStr) setPreferredPeriod("");
                       }}
                       className={`min-w-20.5 sm:min-w-23.5 p-3 rounded-2xl border-2 text-center transition-all flex flex-col items-center justify-center gap-1 cursor-pointer shrink-0 snap-start active:scale-95 ${isSelected
-                          ? "bg-primary-50/80 border-primary-500 shadow-xs"
+                          ? "bg-primary-50/80 border-primary-500"
                           : "bg-white border-gray-200 hover:border-primary-200"
                         }`}
                     >
@@ -266,7 +266,7 @@ export function StepThree({ wizard }) {
                   <button
                     type="button"
                     className={`min-w-20.5 sm:min-w-23.5 h-full min-h-20.5 p-3 rounded-2xl border-2 border-dashed text-center transition-all flex flex-col items-center justify-center gap-1 cursor-pointer select-none active:scale-95 ${isCustomDate
-                        ? "bg-primary-50/80 border-primary-500 text-primary-700 shadow-xs"
+                        ? "bg-primary-50/80 border-primary-500 text-primary-700"
                         : "bg-gray-50/60 border-gray-300 hover:border-primary-300 text-gray-600"
                       }`}
                   >
