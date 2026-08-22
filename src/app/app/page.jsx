@@ -2,65 +2,22 @@ import Link from "next/link";
 import {
   Calendar,
   CalendarPlus,
-  Stethoscope,
   Building2,
   Clock,
   ChevronLeft,
   User,
   PhoneCall,
-  CheckCircle2,
-  AlertCircle,
-  Clock3,
-  MapPin,
 } from "lucide-react";
 import AppHeader from "@/components/layout/AppHeader";
 import { Card, Button, TitlePage } from "@/components/ui";
-import { QuickAppointmentCard } from "@/components/appointments/AppointmentCard";
+import { AppointmentCard } from "@/components/appointments";
 import { appointmentsService } from "@/services/appointmentsService";
 import { patientsService } from "@/services/patientsService";
-import { formatArabicDate } from "./booking/utils/bookingDateUtils";
 
 export const metadata = {
   title: "الرئيسية | مستشفى حضرموت الحديث",
   description: "لوحة التحكم الطبية لمستشفى حضرموت الحديث - حجز المواعيد ومتابعة الاستشارات",
 };
-
-function getStatusBadge(status) {
-  switch (status) {
-    case "confirmed":
-      return {
-        label: "مؤكد",
-        className: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        icon: CheckCircle2,
-      };
-    case "waiting":
-    case "pending":
-      return {
-        label: "قيد الانتظار",
-        className: "bg-amber-50 text-amber-700 border-amber-200",
-        icon: Clock3,
-      };
-    case "completed":
-      return {
-        label: "مكتمل",
-        className: "bg-blue-50 text-blue-700 border-blue-200",
-        icon: CheckCircle2,
-      };
-    case "cancelled":
-    case "rejected":
-      return {
-        label: "ملغي",
-        className: "bg-rose-50 text-rose-700 border-rose-200",
-        icon: AlertCircle,
-      };
-    default:
-      return {
-        label: status || "غير محدد",
-        className: "bg-gray-50 text-gray-700 border-gray-200",
-        icon: Clock3,
-      };
-  }
-}
 
 export default async function AppPage() {
   // Fetch real patient appointments and user profile concurrently
@@ -79,7 +36,7 @@ export default async function AppPage() {
     (a, b) => new Date(a.appointment_date) - new Date(b.appointment_date)
   )[0];
 
-  // Recent appointments list (up to 4)
+  // Up to 4 recent appointments
   const recentAppointments = appointments.slice(0, 4);
 
   return (
@@ -112,81 +69,7 @@ export default async function AppPage() {
           </div>
 
           {nextAppointment ? (
-            <div className="bg-white border-2 border-white hover:border-primary-300 rounded-2xl p-4 sm:p-6 shadow-xs transition-all duration-200 relative overflow-hidden">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                {/* Right side: Doctor and appointment details */}
-                <div className="flex items-start sm:items-center gap-3.5 sm:gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary-50 border border-primary-100 flex items-center justify-center text-primary-600 shrink-0">
-                    <Stethoscope className="w-6 h-6 sm:w-7 sm:h-7" />
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-base sm:text-lg font-bold text-gray-950">
-                        {nextAppointment.doctor_name || "طبيب متخصص"}
-                      </h3>
-                      {(() => {
-                        const badge = getStatusBadge(nextAppointment.status);
-                        const StatusIcon = badge.icon;
-                        return (
-                          <span
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${badge.className}`}
-                          >
-                            <StatusIcon className="w-3 h-3" />
-                            {badge.label}
-                          </span>
-                        );
-                      })()}
-                    </div>
-
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {nextAppointment.doctor_specialty || "استشاري عام"}
-                    </p>
-
-                    <div className="flex items-center gap-3 pt-1 text-xs text-gray-500 flex-wrap">
-                      <span className="inline-flex items-center gap-1 font-medium text-gray-700 bg-gray-50 px-2 py-0.5 rounded-md border border-gray-200">
-                        <Calendar className="w-3.5 h-3.5 text-primary-500" />
-                        {formatArabicDate(nextAppointment.appointment_date)}
-                      </span>
-                      <span className="inline-flex items-center gap-1 font-medium text-gray-700 bg-gray-50 px-2 py-0.5 rounded-md border border-gray-200">
-                        <Clock className="w-3.5 h-3.5 text-primary-500" />
-                        {nextAppointment.period === "morning"
-                          ? "الصباح"
-                          : nextAppointment.period === "evening"
-                            ? "المساء"
-                            : nextAppointment.period}
-                      </span>
-                      {nextAppointment.building && (
-                        <span className="inline-flex items-center gap-1 text-gray-500">
-                          <MapPin className="w-3.5 h-3.5" />
-                          {nextAppointment.building}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Left side actions */}
-                <div className="flex items-center gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-gray-100 shrink-0">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    link={`/app/appointments/${nextAppointment.appointment_id}`}
-                    className="flex-1 md:flex-none"
-                  >
-                    إدارة الموعد
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    link={`/app/appointments/${nextAppointment.appointment_id}/cancel`}
-                    className="flex-1 md:flex-none text-rose-600 hover:text-rose-700 hover:bg-rose-50"
-                  >
-                    إلغاء الموعد
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <AppointmentCard appointment={nextAppointment} />
           ) : (
             <Card className="bg-white border-2 border-white p-6 text-center space-y-3 shadow-2xs">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-primary-50 text-primary-500 flex items-center justify-center">
@@ -212,76 +95,84 @@ export default async function AppPage() {
           )}
         </section>
 
-        {/* 3. Quick Actions (2x2 on Mobile, 4x1 on Desktop) */}
+        {/* 3. Quick Action Navigation Cards (2x2 Grid) */}
         <section className="space-y-3">
-          <h2 className="text-base sm:text-lg font-bold text-gray-900">
-            الخدمات والإجراءات السريعة
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900">
+              الخدمات الطبية السريعة
+            </h2>
+          </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            {/* Quick Action 1: New Booking */}
+            {/* Card 1: Book New Appointment */}
             <Card
               link="/app/booking"
-              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 group shadow-2xs hover:shadow-xs active:scale-[0.98] select-none"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
             >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
-                <CalendarPlus className="w-5 h-5 sm:w-6 sm:h-6" />
+              <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <CalendarPlus className="w-5 h-5" />
               </div>
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <h3 className="font-bold text-gray-950 text-sm sm:text-base group-hover:text-primary-600 transition-colors">
                   حجز موعد طبي
                 </h3>
-                <p className="text-xs text-gray-500">اختر الطبيب والوقت</p>
+                <p className="text-xs text-gray-500">
+                  اختيار الطبيب والموعد المناسب
+                </p>
               </div>
             </Card>
 
-            {/* Quick Action 2: Doctors Directory */}
+            {/* Card 2: Doctors Guide */}
             <Card
               link="/app/doctors"
-              className="bg-white border-2 border-white hover:border-emerald-300 p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 group shadow-2xs hover:shadow-xs active:scale-[0.98] select-none"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
             >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
-                <Stethoscope className="w-5 h-5 sm:w-6 sm:h-6" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <User className="w-5 h-5" />
               </div>
-              <div className="space-y-0.5">
-                <h3 className="font-bold text-gray-950 text-sm sm:text-base group-hover:text-emerald-600 transition-colors">
+              <div className="space-y-1">
+                <h3 className="font-bold text-gray-950 text-sm sm:text-base group-hover:text-primary-600 transition-colors">
                   دليل الأطباء
                 </h3>
-                <p className="text-xs text-gray-500">نخبة الاستشاريين</p>
+                <p className="text-xs text-gray-500">
+                  استعراض الاستشاريين والأطباء
+                </p>
               </div>
             </Card>
 
-            {/* Quick Action 3: Medical Departments */}
+            {/* Card 3: Medical Departments */}
             <Card
               link="/app/departments"
-              className="bg-white border-2 border-white hover:border-amber-300 p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 group shadow-2xs hover:shadow-xs active:scale-[0.98] select-none"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
             >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
-                <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
+              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <Building2 className="w-5 h-5" />
               </div>
-              <div className="space-y-0.5">
-                <h3 className="font-bold text-gray-950 text-sm sm:text-base group-hover:text-amber-600 transition-colors">
+              <div className="space-y-1">
+                <h3 className="font-bold text-gray-950 text-sm sm:text-base group-hover:text-primary-600 transition-colors">
                   الأقسام والعيادات
                 </h3>
-                <p className="text-xs text-gray-500">كافة التخصصات الطبية</p>
+                <p className="text-xs text-gray-500">
+                  التخصصات والمراكز العلاجية
+                </p>
               </div>
             </Card>
 
-            {/* Quick Action 4: My Appointments */}
+            {/* Card 4: Appointments Records */}
             <Card
               link="/app/appointments"
-              className="bg-white border-2 border-white hover:border-purple-300 p-4 sm:p-5 flex flex-col justify-between transition-all duration-200 group shadow-2xs hover:shadow-xs active:scale-[0.98] select-none"
+              className="bg-white border-2 border-white hover:border-primary-300 p-4 sm:p-5 flex flex-col justify-between group transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer block select-none active:scale-[0.98]"
             >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
-                <Clock className="w-5 h-5 sm:w-6 sm:h-6" />
+              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                <Clock className="w-5 h-5" />
               </div>
-              <div className="space-y-0.5">
-                <h3 className="font-bold text-gray-950 text-sm sm:text-base group-hover:text-purple-600 transition-colors">
-                  سجل مواعيدي
+              <div className="space-y-1">
+                <h3 className="font-bold text-gray-950 text-sm sm:text-base group-hover:text-primary-600 transition-colors">
+                  سجل المواعيد
                 </h3>
                 <p className="text-xs text-gray-500">
                   {appointments.length > 0
-                    ? `${appointments.length} موعد مسجل`
+                    ? `${appointments.length} مواعيد مسجلة`
                     : "متابعة الحجوزات"}
                 </p>
               </div>
@@ -308,9 +199,9 @@ export default async function AppPage() {
           </div>
 
           {recentAppointments.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="space-y-3">
               {recentAppointments.map((appointment) => (
-                <QuickAppointmentCard
+                <AppointmentCard
                   key={appointment.appointment_id}
                   appointment={appointment}
                 />

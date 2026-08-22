@@ -1,8 +1,13 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+
 export default function TitlePage({
   title,
   children,
   as = "h2", // Default is h2 for subpages, pass as="h1" for main landing/dashboard
   align = "right",
+  backLink,
+  backLabel = "العودة",
   className = "",
   titleClassName = "",
   ...props
@@ -29,6 +34,18 @@ export default function TitlePage({
       } ${className}`}
       {...props}
     >
+      {backLink && (
+        <div className="pb-1">
+          <Link
+            href={backLink}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-primary-700 transition-colors group cursor-pointer"
+          >
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
+            <span>{backLabel}</span>
+          </Link>
+        </div>
+      )}
+
       <HeadingTag
         className={`wrap-break-words ${headingSizeStyles} ${titleClassName}`}
       >

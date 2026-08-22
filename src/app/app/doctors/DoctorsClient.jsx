@@ -118,7 +118,7 @@ export default function DoctorsClient({
                   {/* Bottom Content: Doctor Name & Specialty */}
                   <div className="p-3.5 sm:p-4 space-y-0.5">
                     <h3 className="font-bold text-gray-950 text-sm truncate group-hover:text-primary-600 transition-colors">
-                      {doctor.full_name_ar}
+                      د.{doctor.full_name_ar}
                     </h3>
                     <p className="text-xs text-gray-500 truncate">
                       {specialtyName}

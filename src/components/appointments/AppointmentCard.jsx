@@ -54,13 +54,13 @@ export default function AppointmentCard({
     appointment.doctor_name_ar ||
     appointment.doctor_name_en ||
     appointment.doctor_name ||
-    "طبيب المستشفى";
+    "غير مسجل";
 
   const specialty =
     appointment.doctor_specialty_ar ||
     appointment.doctor_specialty_en ||
     appointment.doctor_specialty ||
-    "استشاري عام";
+    "غير مسجل";
 
   const periodArabic = formatPeriodArabic(appointment.period);
   const patientName = appointment.patient_name || "";
@@ -96,33 +96,30 @@ export default function AppointmentCard({
               {formatArabicDate(appointment.appointment_date)}
               {periodArabic && ` • ${periodArabic}`}
             </p>
-
           </div>
         </div>
 
-        {/* Status Badge & Cancel Action */}
-        <div className="flex flex-col items-end justify-between gap-3 shrink-0 self-stretch">
-          <span
-            className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${statusCfg.badgeClass}`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotClass}`} />
-            <span>{statusCfg.label}</span>
-          </span>
+        {/* Status Badge */}
+        <span
+          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 ${statusCfg.badgeClass}`}
+        >
+          <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dotClass}`} />
+          <span>{statusCfg.label}</span>
+        </span>
 
-          {isUpcoming && onCancel && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onCancel(appointment);
-              }}
-              className="text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-2.5 py-1 rounded-lg transition-colors cursor-pointer z-10"
-            >
-              إلغاء الموعد
-            </button>
-          )}
-        </div>
+        {isUpcoming && onCancel && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onCancel(appointment);
+            }}
+            className="text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 z-10"
+          >
+            إلغاء الموعد
+          </button>
+        )}
       </div>
     </Card>
   );

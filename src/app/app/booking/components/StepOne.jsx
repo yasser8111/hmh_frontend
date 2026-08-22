@@ -53,14 +53,14 @@ export function StepOne({ wizard }) {
     <div className="space-y-4 px-4 sm:px-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h3 className="text-base sm:text-lg font-bold text-gray-950">اختر القسم</h3>
-        <div className="w-full sm:w-72">
-          <SearchBar
-            placeholder="ابحث عن قسم..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            size="md"
-          />
-        </div>
+
+        <SearchBar
+          className="w-full"
+          placeholder="ابحث عن قسم..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          size="md"
+        />
       </div>
 
       <div className="max-h-[55vh] sm:max-h-none overflow-y-auto sm:overflow-visible p-1 -m-1">
