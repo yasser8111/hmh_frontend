@@ -1,13 +1,25 @@
 // Evaluate period availability and crowd level based on doctor schedule
-export function getPeriodAvailabilityAndCrowd(doctorSchedule, doctorId, dayKey, period, dateStr) {
-  if (doctorSchedule && Array.isArray(doctorSchedule) && doctorSchedule.length > 0) {
+export function getPeriodAvailabilityAndCrowd(
+  doctorSchedule,
+  doctorId,
+  dayKey,
+  period,
+  dateStr,
+) {
+  if (
+    doctorSchedule &&
+    Array.isArray(doctorSchedule) &&
+    doctorSchedule.length > 0
+  ) {
     const daySlots = doctorSchedule.filter(
-      (s) => s.day_of_week?.toLowerCase() === dayKey?.toLowerCase()
+      (s) => s.day_of_week?.toLowerCase() === dayKey?.toLowerCase(),
     );
 
     if (daySlots.length > 0) {
       const slot = daySlots.find(
-        (s) => s.period?.toLowerCase() === period.toLowerCase() && s.is_active !== false
+        (s) =>
+          s.period?.toLowerCase() === period.toLowerCase() &&
+          s.is_active !== false,
       );
       if (!slot) {
         return {

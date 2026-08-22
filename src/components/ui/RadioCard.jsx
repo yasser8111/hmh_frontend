@@ -54,7 +54,14 @@ export default function RadioCard({
 
         <div>
           {title && (
-            <h4 className="font-bold text-gray-950 text-sm line-clamp-2" title={title}>
+            <h4
+              className={`font-bold text-gray-950 line-clamp-2 text-start ${
+                description
+                  ? "text-base"
+                  : "text-sm sm:text-lg"
+              }`}
+              title={title}
+            >
               {title}
             </h4>
           )}

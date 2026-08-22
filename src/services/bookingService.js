@@ -9,21 +9,26 @@ export const bookingService = {
 
   // Create new patient appointment (online)
   async createAppointment(payload) {
-    if (!payload) return null;
+    if (!payload) throw new Error("بيانات الحجز غير متوفرة");
 
-    try {
-      const res = await fetch("/api/appointments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    const res = await fetch("/api/appointments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-      if (!res.ok) return null;
-      const json = await res.json();
-      return json?.data || json || null;
-    } catch {
-      return null;
+    const json = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      const errorMsg =
+        json?.detail?.message ||
+        (Array.isArray(json?.detail) ? json.detail[0]?.msg : json?.detail) ||
+        json?.message ||
+        "تعذر إتمام الحجز. يرجى التحقق من توفر الطبيب في هذا اليوم.";
+      throw new Error(errorMsg);
     }
+
+    return json?.data || json;
   },
 
   // Delegated doctor methods for backward compatibility

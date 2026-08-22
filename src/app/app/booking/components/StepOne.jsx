@@ -1,7 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
-import { Button, Card, Input, RadioCard } from "@/components/ui";
+import { Button, Card, SearchBar, RadioCard } from "@/components/ui";
 
 // Skeleton shown while specialties are loading
 export function StepOneSkeleton() {
@@ -21,9 +20,8 @@ export function StepOneSkeleton() {
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
             <div
               key={i}
-              className={`p-4 rounded-2xl border-2 border-gray-100 bg-white items-center h-14 ${
-                i > 5 ? "hidden sm:flex" : "flex"
-              }`}
+              className={`p-4 rounded-2xl border-2 border-gray-100 bg-white items-center h-14 ${i > 5 ? "hidden sm:flex" : "flex"
+                }`}
             >
               <div className="h-4 bg-gray-200/80 rounded-md w-3/4" />
             </div>
@@ -54,13 +52,13 @@ export function StepOne({ wizard }) {
   return (
     <div className="space-y-4 px-4 sm:px-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h3 className="text-lg font-bold text-gray-950">اختر القسم</h3>
+        <h3 className="text-base sm:text-lg font-bold text-gray-950">اختر القسم</h3>
         <div className="w-full sm:w-72">
-          <Input
-            icon={Search}
+          <SearchBar
             placeholder="ابحث عن قسم..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            size="md"
           />
         </div>
       </div>
@@ -87,9 +85,8 @@ export function StepOne({ wizard }) {
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
               <div
                 key={i}
-                className={`p-4 rounded-2xl border-2 border-gray-100 bg-white items-center h-14 ${
-                  i > 5 ? "hidden sm:flex" : "flex"
-                }`}
+                className={`p-4 rounded-2xl border-2 border-gray-100 bg-white items-center h-14 ${i > 5 ? "hidden sm:flex" : "flex"
+                  }`}
               >
                 <div className="h-4 bg-gray-200/80 rounded-md w-3/4" />
               </div>

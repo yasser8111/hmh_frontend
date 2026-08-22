@@ -27,6 +27,7 @@ export function NavSection() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
+    { label: "الرئيسية", href: "/app" },
     { label: "حجز موعد", href: "/app/booking" },
     { label: "مواعيدي", href: "/app/appointments" },
     { label: "الأطباء", href: "/app/doctors" },
@@ -55,7 +56,11 @@ export function NavSection() {
       {/* Desktop navigation */}
       <nav className="items-center gap-6 hidden lg:flex ms-auto">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive =
+            item.href === "/app"
+              ? pathname === "/app"
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
           return (
             <Link
               key={item.href}
@@ -86,7 +91,7 @@ export function NavSection() {
         <div
           className={`relative bg-white border border-gray-200 overflow-hidden shadow-md origin-top-right rtl:origin-top-left transition-all ${
             isOpen
-              ? "w-64 h-[236px] rounded-2xl shadow-xl border-gray-300/80 duration-400 ease-[cubic-bezier(0.34,1.35,0.64,1)]"
+              ? "w-64 h-[285px] rounded-2xl shadow-xl border-gray-300/80 duration-400 ease-[cubic-bezier(0.34,1.35,0.64,1)]"
               : "w-11 h-11 rounded-xl shadow-sm hover:border-gray-300 hover:bg-gray-50 active:scale-95 duration-300 ease-in-out"
           }`}
         >
@@ -127,7 +132,11 @@ export function NavSection() {
             {/* Navigation Links */}
             <nav className="flex flex-col gap-1 p-2">
               {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive =
+                  item.href === "/app"
+                    ? pathname === "/app"
+                    : pathname === item.href || pathname.startsWith(`${item.href}/`);
+
                 return (
                   <Link
                     key={item.href}
@@ -159,4 +168,3 @@ export default function AppHeader() {
     </header>
   );
 }
-

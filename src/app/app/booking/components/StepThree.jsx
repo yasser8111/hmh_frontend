@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { Phone, CreditCard, Building, Sun, Moon, Calendar, Clock, AlertCircle, Loader2 } from "lucide-react";
-import { Button, Card, Input, RadioCard, Textarea } from "@/components/ui";
+import { Button, Card, Input, RadioCard, Textarea, useToast } from "@/components/ui";
 import DatePicker from "@/components/ui/DatePicker";
 import { doctorsService } from "@/services/doctorsService";
 import { getAvailableBookingDays, formatArabicDate } from "../utils/bookingDateUtils";
@@ -13,26 +13,24 @@ function PeriodCard({ title, time, icon: Icon, crowd, selected, disabled, isLock
   return (
     <div
       onClick={onClick}
-      className={`p-4 rounded-2xl border-2 transition-all duration-200 flex flex-col justify-between gap-3 select-none active:scale-[0.98] ${
-        disabled
+      className={`p-4 rounded-2xl border-2 transition-all duration-200 flex flex-col justify-between gap-3 select-none active:scale-[0.98] ${disabled
           ? "border-gray-200 bg-gray-50/50 opacity-60 cursor-not-allowed"
           : isLocked
-          ? "border-gray-200 bg-gray-50/40 hover:border-gray-300 cursor-pointer"
-          : selected
-          ? "bg-primary-50/80 border-primary-500 cursor-pointer shadow-xs"
-          : "bg-white border-gray-200 hover:border-primary-200 cursor-pointer"
-      }`}
+            ? "border-gray-200 bg-gray-50/40 hover:border-gray-300 cursor-pointer"
+            : selected
+              ? "bg-primary-50/80 border-primary-500 cursor-pointer shadow-xs"
+              : "bg-white border-gray-200 hover:border-primary-200 cursor-pointer"
+        }`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-              disabled || isLocked
+            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${disabled || isLocked
                 ? "bg-gray-100 text-gray-400"
                 : selected
-                ? "bg-primary-500 text-white"
-                : "bg-primary-50 text-primary-600"
-            }`}
+                  ? "bg-primary-500 text-white"
+                  : "bg-primary-50 text-primary-600"
+              }`}
           >
             <Icon className="w-5 h-5" />
           </div>
@@ -61,6 +59,7 @@ function PeriodCard({ title, time, icon: Icon, crowd, selected, disabled, isLock
 }
 
 export function StepThree({ wizard }) {
+  const toast = useToast();
   const {
     selectedSpecialty,
     selectedDoctor,
@@ -86,7 +85,6 @@ export function StepThree({ wizard }) {
   } = wizard;
 
   const [doctorSchedule, setDoctorSchedule] = useState(selectedDoctor?.schedule || []);
-  const [showDateWarning, setShowDateWarning] = useState(false);
 
   // Fetch doctor schedule if not present in doctor object
   useEffect(() => {
@@ -102,7 +100,7 @@ export function StepThree({ wizard }) {
       .then((data) => {
         if (isMounted && Array.isArray(data)) setDoctorSchedule(data);
       })
-      .catch(() => {});
+      .catch(() => { });
 
     return () => { isMounted = false; };
   }, [selectedDoctor]);
@@ -144,17 +142,16 @@ export function StepThree({ wizard }) {
 
   const handlePeriodCardClick = (period) => {
     if (!selectedDate) {
-      setShowDateWarning(true);
+      toast.warning("تنبيه", "يجب تحديد اليوم أولاً للتحقق من فترات دوام الطبيب ومستوى الازدحام.");
       return;
     }
-    setShowDateWarning(false);
     const crowd = period === "morning" ? morningCrowd : eveningCrowd;
     if (crowd?.isAvailable) setPreferredPeriod(period);
   };
 
   return (
     <div className="space-y-5 px-4 sm:px-0">
-      <h3 className="text-lg font-bold text-gray-950">بيانات المريض وفترة الحضور</h3>
+      <h3 className="text-base sm:text-lg font-bold text-gray-950">بيانات المريض وفترة الحضور</h3>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Form Column */}
@@ -231,14 +228,12 @@ export function StepThree({ wizard }) {
                       type="button"
                       onClick={() => {
                         setSelectedDate(day.dateStr);
-                        setShowDateWarning(false);
                         if (selectedDate !== day.dateStr) setPreferredPeriod("");
                       }}
-                      className={`min-w-[82px] sm:min-w-[94px] p-3 rounded-2xl border-2 text-center transition-all flex flex-col items-center justify-center gap-1 cursor-pointer shrink-0 snap-start active:scale-95 ${
-                        isSelected
+                      className={`min-w-20.5 sm:min-w-23.5 p-3 rounded-2xl border-2 text-center transition-all flex flex-col items-center justify-center gap-1 cursor-pointer shrink-0 snap-start active:scale-95 ${isSelected
                           ? "bg-primary-50/80 border-primary-500 shadow-xs"
                           : "bg-white border-gray-200 hover:border-primary-200"
-                      }`}
+                        }`}
                     >
                       <span className={`text-[11px] font-semibold ${isSelected ? "text-primary-700" : "text-gray-500"}`}>
                         {day.isToday ? "اليوم" : day.isTomorrow ? "غداً" : day.dayName}
@@ -262,7 +257,6 @@ export function StepThree({ wizard }) {
                     onChange={(e) => {
                       if (e.target.value) {
                         setSelectedDate(e.target.value);
-                        setShowDateWarning(false);
                         setPreferredPeriod("");
                       }
                     }}
@@ -271,11 +265,10 @@ export function StepThree({ wizard }) {
                   />
                   <button
                     type="button"
-                    className={`min-w-[86px] sm:min-w-[98px] h-full min-h-[82px] p-3 rounded-2xl border-2 border-dashed text-center transition-all flex flex-col items-center justify-center gap-1 cursor-pointer select-none active:scale-95 ${
-                      isCustomDate
+                    className={`min-w-20.5 sm:min-w-23.5 h-full min-h-20.5 p-3 rounded-2xl border-2 border-dashed text-center transition-all flex flex-col items-center justify-center gap-1 cursor-pointer select-none active:scale-95 ${isCustomDate
                         ? "bg-primary-50/80 border-primary-500 text-primary-700 shadow-xs"
                         : "bg-gray-50/60 border-gray-300 hover:border-primary-300 text-gray-600"
-                    }`}
+                      }`}
                   >
                     <Calendar className={`w-5 h-5 ${isCustomDate ? "text-primary-600" : "text-gray-500"}`} />
                     <span className="text-[11px] font-bold">{isCustomDate ? "تاريخ محدد" : "تاريخ آخر"}</span>
@@ -300,13 +293,6 @@ export function StepThree({ wizard }) {
                   </span>
                 )}
               </div>
-
-              {showDateWarning && !selectedDate && (
-                <div className="p-3 rounded-2xl bg-amber-50 text-xs font-semibold text-amber-900 flex items-center gap-2 animate-in fade-in slide-in-from-top-1">
-                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>يجب تحديد اليوم أولاً للتحقق من فترات دوام الطبيب ومستوى الازدحام.</span>
-                </div>
-              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <PeriodCard
@@ -379,8 +365,8 @@ export function StepThree({ wizard }) {
                   {preferredPeriod === "morning"
                     ? "صباحية (8:30 ص - 1:30 م)"
                     : preferredPeriod === "evening"
-                    ? "مسائية (4:30 م - 9:30 م)"
-                    : "لم يتم التحديد"}
+                      ? "مسائية (4:30 م - 9:30 م)"
+                      : "لم يتم التحديد"}
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -393,7 +379,6 @@ export function StepThree({ wizard }) {
               <div className="p-3 rounded-2xl bg-amber-50 text-[11px] text-amber-900 space-y-1.5 leading-relaxed">
                 <span className="font-bold block text-amber-950">ملاحظات:</span>
                 <p>• يرجى التأكد من أن الرقم المُدخل مسجل في الواتساب لتصلك رسالة تأكيد الموعد ورقم الدور.</p>
-                <p>• يرجى الحضور قبل الموعد بـ 15 دقيقة لتأكيد الدخول.</p>
               </div>
             </div>
 

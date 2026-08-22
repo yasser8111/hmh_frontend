@@ -5,5 +5,7 @@ export { default as DatePicker } from "./DatePicker";
 export { default as Input } from "./Input";
 export { default as InputOTP } from "./input-otp";
 export { default as RadioCard } from "./RadioCard";
+export { default as SearchBar } from "./SearchBar";
 export { default as Textarea } from "./Textarea";
+export { default as TitlePage, TitlePage as PageTitle } from "./TitlePage";
 export { ToastProvider, useToast, ToastContainer } from "./Toast";

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Search, User, ChevronRight, ChevronLeft } from "lucide-react";
-import { Card, Input } from "@/components/ui";
+import { User, ChevronRight, ChevronLeft } from "lucide-react";
+import { Card, SearchBar } from "@/components/ui";
 import { useDoctors } from "@/hooks/useDoctors";
 
 export default function DoctorsClient({
@@ -40,12 +40,11 @@ export default function DoctorsClient({
 
           {/* Search Input */}
           <div className="w-full sm:w-72">
-            <Input
+            <SearchBar
               placeholder="ابحث باسم الطبيب أو القسم..."
-              icon={Search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-xs"
+              size="md"
             />
           </div>
         </div>

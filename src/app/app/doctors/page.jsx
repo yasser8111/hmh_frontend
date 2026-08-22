@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import AppHeader from "@/components/layout/AppHeader";
 import DoctorsClient from "./DoctorsClient";
-import { Card } from "@/components/ui";
+import { Card, TitlePage } from "@/components/ui";
 import { bookingService } from "@/services/bookingService";
 import { doctorsService } from "@/services/doctorsService";
 
@@ -81,7 +81,8 @@ export default async function DoctorsPage({ searchParams }) {
       <AppHeader />
 
       {/* 2. Main Content */}
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-6 lg:py-8 w-full">
+      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 w-full space-y-4 sm:space-y-6">
+        <TitlePage title="دليل الأطباء والاستشاريين" />
         <Suspense key={`${page}-${specialtyId}`} fallback={<DoctorsSkeleton />}>
           <DoctorsPageContainer page={page} specialtyId={specialtyId} />
         </Suspense>

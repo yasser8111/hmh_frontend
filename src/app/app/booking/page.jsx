@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import AppHeader from "@/components/layout/AppHeader";
 import BookingWizard, { StepTimeline, StepOneSkeleton } from "./BookingWizard";
-import { Card } from "@/components/ui";
+import { Card, TitlePage } from "@/components/ui";
 import { bookingService } from "@/services/bookingService";
 
 export const metadata = {
@@ -37,9 +37,7 @@ export default function BookingPage() {
       <AppHeader />
 
       <div className="flex-1 max-w-7xl mx-auto px-0 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 w-full space-y-4 sm:space-y-6">
-        <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-950 text-center">
-          حجز موعد طبي جديد
-        </h1>
+        <TitlePage title="حجز موعد طبي جديد" />
 
         {/*
           Suspense streams specialties first, then doctors.

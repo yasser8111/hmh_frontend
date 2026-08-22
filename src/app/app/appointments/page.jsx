@@ -1,5 +1,6 @@
 import AppHeader from "@/components/layout/AppHeader";
 import AppointmentsClient from "./AppointmentsClient";
+import { TitlePage } from "@/components/ui";
 import { appointmentsService } from "@/services/appointmentsService";
 
 export const metadata = {
@@ -17,9 +18,7 @@ export default async function AppointmentsPage() {
 
       {/* 2. Main Page Content */}
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 w-full space-y-4 sm:space-y-6">
-        <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-950 text-center">
-          سجل المواعيد والحجوزات
-        </h1>
+        <TitlePage title="سجل المواعيد والحجوزات" />
         <AppointmentsClient initialAppointments={appointments} />
       </div>
     </main>
